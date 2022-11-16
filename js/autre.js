@@ -1,8 +1,8 @@
-// utiliser fetch pour récupérer les produits et les passer à init
-// signaler toute erreur qui se produit lors de l'opération de récupération
-// une fois que les produits ont été correctement chargés et formatés en tant qu'objet JSON
-// en utilisant response.json(), exécutez la fonction initialize()
-fetch("https://github.com/devjuju/Kanap.git" , { method: 'GET' }, )
+// use fetch to retrieve the products and pass them to init
+// report any errors that occur in the fetch operation
+// once the products have been successfully loaded and formatted as a JSON object
+// using response.json(), run the initialize() function
+fetch('products.json')
   .then( response => {
     if (!response.ok) {
       throw new Error(`HTTP error: ${response.status}`);
@@ -11,9 +11,13 @@ fetch("https://github.com/devjuju/Kanap.git" , { method: 'GET' }, )
   })
   .then( json => initialize(json) )
   .catch( err => console.error(`Fetch problem: ${err.message}`) );
-// configure la logique de l'application, déclare les variables requises, contient toutes les autres fonctions
+
+// sets up the app logic, declares required variables, contains all the other functions
 function initialize(products) {
-  // saisir les éléments de l'interface utilisateur que nous devons manipuler
+  // grab the UI elements that we need to manipulate
+  const category = document.querySelector('#category');
+  const searchTerm = document.querySelector('#searchTerm');
+  const searchBtn = document.querySelector('button');
   const main = document.querySelector('main');
 
   // keep a record of what the last category and search term entered were
