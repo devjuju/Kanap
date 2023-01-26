@@ -127,7 +127,7 @@ function getPost(sofa){
             }
         //Si le panier est vide
         } else {
-            emptyCart();
+            emptyCart()
             Storage.push(optionsProduit);
             console.table(Storage);
             popupConfirmation();
@@ -136,7 +136,7 @@ function getPost(sofa){
 
   function emptyCart(){
     let Storage = localStorage.getItem("produit");
-    if(Storage == null){
+    if(Storage == 0){
         Storage =[];
     } else{
         return JSON.parse(Storage);
