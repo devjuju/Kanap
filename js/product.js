@@ -42,8 +42,6 @@ function getPost(sofa){
     let description = document.getElementById("description");
     description.innerHTML = sofa.description;
 
-    // Insertion des options de couleurs
-    
     for (let colors of sofa.colors){
         console.table(colors);
         let productColors = document.createElement("option");
@@ -54,28 +52,24 @@ function getPost(sofa){
   
 }
 
-//Gestion du panier
- // événement d'appel au clic
- joinEvent();
+joinEvent();
  // Fonction pour joindre un événement
- function joinEvent(){
-     const button_addToCart = document.querySelector("#addToCart");
-     button_addToCart.addEventListener("click",  (event)=>{
+function joinEvent(){
+    const button_addToCart = document.querySelector("#addToCart");
+    button_addToCart.addEventListener("click",  (event)=>{
          
-         addToCart(sofa)
-     })
- }
+        addToCart(sofa)
+    })
+}
 
-
- // Cette fonction permet d'enregistrer le panier dans le localStorage
- // L'idée est d'enregistrer une valeur par rapport à une clé
+// Cette fonction permet d'enregistrer le panier dans le localStorage
+// L'idée est d'enregistrer une valeur par rapport à une clé
  function saveCart(Storage){
     localStorage.setItem("produit",JSON.stringify(Storage));
-  }
+}
 
- 
-
-  function addToCart(sofa){
+// Cette fonction permet d'ajouter le produit au panier
+function addToCart(sofa){
     if (choiceQuantity.value > 0 && choiceQuantity.value <=100 && choiceQuantity.value != 0){
 
         //Recupération du choix de la couleur
@@ -95,21 +89,21 @@ function getPost(sofa){
             imgProduit: sofa.imageUrl,
             altImgProduit: sofa.altTxt
         };
-    
-   
-    
+
         //fenêtre pop-up
         const popupConfirmation =() =>{
             if(window.confirm(`Votre commande de ${choixQuantite} ${sofa.name} ${choixCouleur} est ajoutée au panier
-    Pour consulter votre panier, cliquez sur OK`)){
+                Pour consulter votre panier, cliquez sur OK`)){
                 window.location.href ="cart.html";
             }
         }
-        let Storage = JSON.parse(localStorage.getItem("produit"));
+
         //Importation dans le local storage
+        let Storage = JSON.parse(localStorage.getItem("produit"));
+
         //Si le panier comporte déjà au moins 1 article
         if (Storage) {
-        let resultFind = Storage.find(el => el.idProduit === idProduct && el.couleurProduit === choixCouleur);
+            let resultFind = Storage.find(el => el.idProduit === idProduct && el.couleurProduit === choixCouleur);
             //Si le produit commandé est déjà dans le panier
             if (resultFind != undefined) {
                 let newQuantite =
@@ -129,14 +123,16 @@ function getPost(sofa){
         } else {
             emptyCart();
             popupConfirmation();
-        }}
-  }  
+        }
+    }
+}  
 
-  function emptyCart(){
+// Cette fonction permet de savoir si le panier est vide
+function emptyCart(){
     let Storage = localStorage.getItem("produit");
     if(Storage == null){
         Storage =[];
     } else{
         return JSON.parse(Storage);
     }
- }
+}
