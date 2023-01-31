@@ -74,10 +74,14 @@ function addToCart(sofa){
 
         //Recupération du choix de la couleur
         let choixCouleur = choiceColor.value;
+        if (choixCouleur == "") {
+            alert("veuillez choisir une couleur");
+            return;
+        }
                     
         //Recupération du choix de la quantité
         let choixQuantite = choiceQuantity.value;
-    
+         
         //Récupération des options de l'article à ajouter au panier
         let optionsProduit = {
             idProduit: idProduct,
@@ -123,7 +127,6 @@ function addToCart(sofa){
         } else {
             emptyCart();
             Storage.push(optionsProduit);
-            console.table(Storage);
             popupConfirmation();
         }
     }
@@ -132,7 +135,7 @@ function addToCart(sofa){
 // Cette fonction permet de savoir si le panier est vide
 function emptyCart(){
     let Storage = localStorage.getItem("produit");
-    if(Storage == 0){
+    if(Storage === null || Storage == 0){
         Storage =[];
     } else{
         return JSON.parse(Storage);
