@@ -122,6 +122,8 @@ function addToCart(sofa){
         //Si le panier est vide
         } else {
             emptyCart();
+            Storage.push(optionsProduit);
+            console.table(Storage);
             popupConfirmation();
         }
     }
@@ -130,7 +132,7 @@ function addToCart(sofa){
 // Cette fonction permet de savoir si le panier est vide
 function emptyCart(){
     let Storage = localStorage.getItem("produit");
-    if(Storage == null){
+    if(Storage == 0){
         Storage =[];
     } else{
         return JSON.parse(Storage);
