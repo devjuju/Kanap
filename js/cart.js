@@ -1,13 +1,13 @@
 const positionEmptyCart = document.querySelector("#cart__items");
 let Storage = JSON.parse(localStorage.getItem("produit"));
 console.table(Storage);
-// Cette fonction permet d'enregistrer le panier dans le localStorage
-    // L'idée est d'enregistrer une valeur par rapport à une clé
-    function saveCart(Storage){
-        localStorage.setItem("produit",JSON.stringify(Storage));
-      }
 
-// Si le panier est vide
+// Cette fonction permet d'enregistrer le panier dans le localStorage
+// L'idée est d'enregistrer une valeur par rapport à une clé
+function saveCart(Storage){
+    localStorage.setItem("produit",JSON.stringify(Storage));
+}
+
 function getCart(){
     if (Storage === null || Storage == 0) {
         const emptyCart = `<p>Votre panier est vide</p>`;
@@ -47,17 +47,11 @@ function getCart(){
                         "</div>"+ 
                     "</div>"+
                 "</div>"+
-            "</article>";
-           
-    
-    
+            "</article>";    
         }
     }
-
-
-
 }
-    getCart();
+getCart();
 
 // Cette fonction permet de calculer le total du prix dans le panier
 function getTotalPrice(){
@@ -67,12 +61,10 @@ function getTotalPrice(){
     total += Storage[sofa].quantiteProduit * Storage[sofa].prixProduit;
    }
    let productTotalPrice = document.getElementById('totalPrice');
-    productTotalPrice.innerHTML = total;
-    console.log(total)
-
- }
+   productTotalPrice.innerHTML = total;
+   console.log(total)
+}
 getTotalPrice();
-
 
 // Cette fonction permet de calculer la quantité
 // L'idée est à partir du panier d'être capable de retourner la quantité de tous les produits 
@@ -88,7 +80,7 @@ function getNumberProduct(){
 }
 getNumberProduct();
 
-
+// Cette fonction permet de retirer un produit du panier
 function removeFromCart(){
     let button_remove = document.querySelectorAll(".deleteItem");
     for(let sofa in Storage){
@@ -102,7 +94,6 @@ function removeFromCart(){
 
             saveCart(Storage)
             
-            //Alerte produit supprimé et refresh
             alert("Ce produit a bien été supprimé du panier");
             location.reload();
         })
@@ -117,7 +108,6 @@ function changeQuantity() {
         qttChange[sofa].addEventListener("change" , (event) => {
             event.preventDefault();
 
-            //Selection de l'element à modifier en fonction de son id ET sa couleur
             let quantityChange = Storage[sofa].quantiteProduit;
             let qttChangeValue = qttChange[sofa].valueAsNumber;
             
@@ -134,8 +124,7 @@ function changeQuantity() {
 }
 changeQuantity();
 
-
-//Instauration formulaire avec regex
+// Cette fonction permet d'instaurater le formulaire avec regex
 function getForm() {
     // Ajout des Regex
     let form = document.querySelector(".cart__order__form");
@@ -280,6 +269,6 @@ function postForm(){
         .catch((err) => {
             alert ("Problème avec fetch : " + err.message);
         });
-        })
+    })
 }
 postForm();

@@ -2,18 +2,17 @@ fillSection();
 
 // Récupération des articles de l'API
 async function getSofas() {
-    var sofasCatch = await fetch("http://localhost:3000/api/products")
-    return await sofasCatch.json();
+  var sofasCatch = await fetch("http://localhost:3000/api/products")
+  return await sofasCatch.json();
 }
 
-    // Répartition des données de l'API dans le DOM
+// Répartition des données de l'API dans le DOM
 async function fillSection() {
     var result = await getSofas ()
     .then(function (resultatAPI){
         const sofas = resultatAPI;
         console.table(sofas);
         for (let sofa of sofas) {
-
           document.getElementById("items").innerHTML += 
           "<a href= "+"./product.html?id="+sofa._id+">"+
             "<article>"+
@@ -25,8 +24,8 @@ async function fillSection() {
             "</article>"+
           "</a>"
         }
-    })
-    .catch (function(error){
-        return error;
-    });
+      })
+  .catch (function(error){
+    return error;
+  });
 }

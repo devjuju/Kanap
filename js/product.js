@@ -127,16 +127,14 @@ function getPost(sofa){
             }
         //Si le panier est vide
         } else {
-            emptyCart()
-            Storage.push(optionsProduit);
-            console.table(Storage);
+            emptyCart();
             popupConfirmation();
         }}
   }  
 
   function emptyCart(){
     let Storage = localStorage.getItem("produit");
-    if(Storage == 0){
+    if(Storage == null){
         Storage =[];
     } else{
         return JSON.parse(Storage);
