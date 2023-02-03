@@ -49,7 +49,6 @@ function getPost(sofa){
         productColors.value = colors;
         productColors.innerHTML = colors;
     }
-  
 }
 
 joinEvent();
@@ -57,8 +56,7 @@ joinEvent();
 function joinEvent(){
     const button_addToCart = document.querySelector("#addToCart");
     button_addToCart.addEventListener("click",  (event)=>{
-         
-        addToCart(sofa)
+        addToCart(sofa);
     })
 }
 
@@ -125,19 +123,12 @@ function addToCart(sofa){
             }
         //Si le panier est vide
         } else {
-            emptyCart();
-            Storage.push(optionsProduit);
+            Storage =[];
             popupConfirmation();
+            Storage.push(optionsProduit);
+            saveCart(Storage);
+            console.table(Storage);
         }
     }
 }  
 
-// Cette fonction permet de savoir si le panier est vide
-function emptyCart(){
-    let Storage = localStorage.getItem("produit");
-    if(Storage === null || Storage == 0){
-        Storage =[];
-    } else{
-        return JSON.parse(Storage);
-    }
-}
