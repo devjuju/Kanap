@@ -49,7 +49,6 @@ function getPost(sofa){
         productColors.value = colors;
         productColors.innerHTML = colors;
     }
-  
 }
 
 joinEvent();
@@ -57,7 +56,6 @@ joinEvent();
 function joinEvent(){
     const button_addToCart = document.querySelector("#addToCart");
     button_addToCart.addEventListener("click",  (event)=>{
-         
         addToCart(sofa);
     })
 }
