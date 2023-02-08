@@ -94,11 +94,6 @@ function addToCart(sofa){
             idProduit: idProduct,
             couleurProduit: choixCouleur,
             quantiteProduit: Number(choixQuantite),
-            nomProduit: sofa.name,
-            prixProduit: sofa.price,
-            descriptionProduit: sofa.description,
-            imgProduit: sofa.imageUrl,
-            altImgProduit: sofa.altTxt
         };
 
         //fenêtre pop-up
