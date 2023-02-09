@@ -95,7 +95,7 @@ function addToCart(sofa){
             couleurProduit: choixCouleur,
             quantiteProduit: Number(choixQuantite),
         };
-
+        
         //fenêtre pop-up
         const popupConfirmation =() =>{
             if(window.confirm(`Votre commande de ${choixQuantite} ${sofa.name} ${choixCouleur} est ajoutée au panier
