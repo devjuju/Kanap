@@ -30,26 +30,35 @@ function getSofa() {
 }
     
 function getPost(sofa){
-    let img = document.querySelector(".item__img");
-    img.innerHTML = "<img src="+sofa.imageUrl+" alt="+'"'+sofa.altTxt+'"'+">";
-          
-    let name = document.getElementById("title");
-    name.innerHTML =  sofa.name;
-        
-    let price = document.getElementById("price");
-    price.innerHTML = sofa.price;
-        
-    let description = document.getElementById("description");
-    description.innerHTML = sofa.description;
+    // Insertion de l'image
+    let articleImg = document.createElement("img");
+    document.querySelector(".item__img").appendChild(articleImg);
+    articleImg.src = sofa.imageUrl;
+    articleImg.alt = sofa.altTxt;
 
+    // Modification du titre "h1"
+    let articleName = document.getElementById('title');
+    articleName.innerHTML = sofa.name;
+
+    // Modification du prix
+    let articlePrice = document.getElementById('price');
+    articlePrice.innerHTML = sofa.price;
+
+    // Modification de la description
+    let articleDescription = document.getElementById('description');
+    articleDescription.innerHTML = sofa.description;
+
+    // Insertion des options de couleurs
     for (let colors of sofa.colors){
         console.table(colors);
-        let productColors = document.createElement("option");
-        document.querySelector("#colors").appendChild(productColors);
-        productColors.value = colors;
-        productColors.innerHTML = colors;
+        let articleColors = document.createElement("option");
+        document.querySelector("#colors").appendChild(articleColors);
+        articleColors.value = colors;
+        articleColors.innerHTML = colors;
     }
+   
 }
+
 
 joinEvent();
  // Fonction pour joindre un événement
@@ -85,13 +94,8 @@ function addToCart(sofa){
             idProduit: idProduct,
             couleurProduit: choixCouleur,
             quantiteProduit: Number(choixQuantite),
-            nomProduit: sofa.name,
-            prixProduit: sofa.price,
-            descriptionProduit: sofa.description,
-            imgProduit: sofa.imageUrl,
-            altImgProduit: sofa.altTxt
         };
-
+        
         //fenêtre pop-up
         const popupConfirmation =() =>{
             if(window.confirm(`Votre commande de ${choixQuantite} ${sofa.name} ${choixCouleur} est ajoutée au panier
