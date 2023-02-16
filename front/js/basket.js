@@ -7,10 +7,17 @@ console.table(Storage);
 function saveCart(Storage){
     localStorage.setItem("produit",JSON.stringify(Storage));
 }
+
 const positionEmptyCart = document.querySelector("#cart__items");
 function getCart() {
     if (Storage) {
         for (let sofa of Storage) {
+            let optionsProduit = {
+                idProduit: sofa.idProduit,
+                couleurProduit: sofa.couleurProduit,
+                quantiteProduit: sofa.quantiteProduit,
+            };
+    
             getSofas(sofa);
         }
     } else {
@@ -23,13 +30,13 @@ function getCart() {
 getCart();
 
 
-function getSofas(Storage) {
-    fetch("http://localhost:3000/api/products/" + Storage.idProduit)
+function getSofas(optionsProduit) {
+    fetch("http://localhost:3000/api/products/" + optionsProduit.idProduit)
         .then(function(response) {
             if (response.ok) {
                 response.json()
                     .then(async function(sofa) {
-                        displaySofas(sofa, Storage);
+                        displaySofas(sofa, optionsProduit);
                     })
              
             } else {
@@ -43,12 +50,12 @@ function getSofas(Storage) {
 
 
 
-function displaySofas(sofa, Storage) {
+function displaySofas(sofa, optionsProduit) {
     // Insertion de l'élément "article"
     let productArticle = document.createElement("article");
     document.querySelector("#cart__items").appendChild(productArticle);
     productArticle.className = "cart__item";
-    productArticle.setAttribute('data-id', Storage.idProduit);
+    productArticle.setAttribute('data-id', optionsProduit.idProduit);
 
     // Insertion de l'élément "div"
     let productDivImg = document.createElement("div");
@@ -79,7 +86,7 @@ function displaySofas(sofa, Storage) {
     // Insertion de la couleur
     let productColor = document.createElement("p");
     productTitle.appendChild(productColor);
-    productColor.innerHTML = Storage.couleurProduit;
+    productColor.innerHTML = optionsProduit.couleurProduit;
     productColor.style.fontSize = "20px";
 
     // Insertion du prix
@@ -105,7 +112,7 @@ function displaySofas(sofa, Storage) {
     // Insertion de la quantité
     let productQuantity = document.createElement("input");
     productItemContentSettingsQuantity.appendChild(productQuantity);
-    productQuantity.value = Storage.quantiteProduit;
+    productQuantity.value = optionsProduit.quantiteProduit;
     productQuantity.className = "itemQuantity";
     productQuantity.setAttribute("type", "number");
     productQuantity.setAttribute("min", "1");
@@ -132,9 +139,9 @@ function displaySofas(sofa, Storage) {
 function getTotalPrice(){
 
    let total = 0;
-   for(let sofa in Storage){
-    total += Storage.quantiteProduit * sofa.price;
-   }
+  
+   total += optionsProduit.quantiteProduit * sofa.price;
+   
    let productTotalPrice = document.getElementById('totalPrice');
    productTotalPrice.innerHTML = total;
    console.log(total)
@@ -148,7 +155,7 @@ function getNumberProduct(){
 
     let number = 0;
     for(let sofa in Storage){
-     number += Storage[sofa].quantiteProduit
+     number += optionsProduit.quantiteProduit
     }
     let productTotalQuantity = document.getElementById('totalQuantity');
     productTotalQuantity.innerHTML = number;
@@ -159,13 +166,26 @@ getNumberProduct();
 
 
 
-function addEventListener(){
+// Cette fonction permet de retirer un produit du panier
+function removeFromCart(){
     let button_remove = document.querySelectorAll(".deleteItem");
     for(let sofa in Storage){
-        button_remove[sofa].addEventListener("click", deleteSofa);
+        button_remove[sofa].addEventListener("click" , (event) => {
+            event.preventDefault();
+
+            let idRemove = optionsProduit.idProduit;
+            let colorRemove = optionsProduit.couleurProduit;
+
+            Storage = Storage.filter( el => el.idProduit !== idRemove || el.couleurProduit !== colorRemove );
+
+            saveCart(Storage)
+            
+            alert("Ce produit a bien été supprimé du panier");
+            location.reload();
+        })
     }
 }
-
+removeFromCart()
 
 
 

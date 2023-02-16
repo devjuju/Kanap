@@ -87,6 +87,11 @@ function addToCart(sofa){
                     
         //Recupération du choix de la quantité
         let choixQuantite = choiceQuantity.value;
+
+        
+
+
+
          
         //Récupération des options de l'article à ajouter au panier
         let optionsProduit = {
