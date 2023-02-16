@@ -8,7 +8,6 @@ const choiceColor = document. querySelector("#colors");
 const choiceQuantity = document.querySelector("#quantity");
 
 getSofa();
-
 // Récupération des articles de l'API
 function getSofa() {
     fetch("http://localhost:3000/api/products/" + idProduct)
@@ -28,34 +27,37 @@ function getSofa() {
         console.log("Erreur de la requête API");
     })
 }
-    
+
+
 function getPost(sofa){
-    // Insertion de l'image
-    let articleImg = document.createElement("img");
-    document.querySelector(".item__img").appendChild(articleImg);
-    articleImg.src = sofa.imageUrl;
-    articleImg.alt = sofa.altTxt;
+ 
+        // Insertion de l'image
+        let articleImg = document.createElement("img");
+        document.querySelector(".item__img").appendChild(articleImg);
+        articleImg.src = sofa.imageUrl;
+        articleImg.alt = sofa.altTxt;
 
-    // Modification du titre "h1"
-    let articleName = document.getElementById('title');
-    articleName.innerHTML = sofa.name;
+        // Modification du titre "h1"
+        let articleName = document.getElementById('title');
+        articleName.innerHTML = sofa.name;
 
-    // Modification du prix
-    let articlePrice = document.getElementById('price');
-    articlePrice.innerHTML = sofa.price;
+        // Modification du prix
+        let articlePrice = document.getElementById('price');
+        articlePrice.innerHTML = sofa.price;
 
-    // Modification de la description
-    let articleDescription = document.getElementById('description');
-    articleDescription.innerHTML = sofa.description;
+        // Modification de la description
+        let articleDescription = document.getElementById('description');
+        articleDescription.innerHTML = sofa.description;
 
-    // Insertion des options de couleurs
-    for (let colors of sofa.colors){
+        // Insertion des options de couleurs
+        for (let colors of sofa.colors){
         console.table(colors);
         let articleColors = document.createElement("option");
         document.querySelector("#colors").appendChild(articleColors);
         articleColors.value = colors;
         articleColors.innerHTML = colors;
-    }
+        }
+    
 }
 
 
@@ -94,7 +96,7 @@ function addToCart(sofa){
             couleurProduit: choixCouleur,
             quantiteProduit: Number(choixQuantite),
         };
-
+        
         //Importation dans le local storage
         let Storage = JSON.parse(localStorage.getItem("produit"));
 
@@ -108,18 +110,17 @@ function addToCart(sofa){
                 resultFind.quantiteProduit = newQuantite;
                 saveCart(Storage);
                 console.table(Storage);
-                popupConfirmation();
+                
             //Si le produit commandé n'est pas dans le panier
             } else {
                 Storage.push(optionsProduit);
                 saveCart(Storage);
                 console.table(Storage);
-                popupConfirmation();
+               
             }
         //Si le panier est vide
         } else {
             Storage =[];
-            popupConfirmation();
             Storage.push(optionsProduit);
             saveCart(Storage);
             console.table(Storage);
