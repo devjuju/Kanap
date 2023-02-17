@@ -57,42 +57,38 @@ function getPost(sofa){
         articleColors.innerHTML = colors;
     }
 }
-
+// Cette fonction permet d'enregistrer le panier dans le localStorage
+// L'idée est d'enregistrer une valeur par rapport à une clé
+function saveCart(Storage){
+    localStorage.setItem("produit",JSON.stringify(Storage));
+}
 
 joinEvent();
  // Fonction pour joindre un événement
 function joinEvent(){
     const button_addToCart = document.querySelector("#addToCart");
     button_addToCart.addEventListener("click",  (event)=>{
-        addToCart(sofa);
+        addToCart();
     })
 }
 
-// Cette fonction permet d'enregistrer le panier dans le localStorage
-// L'idée est d'enregistrer une valeur par rapport à une clé
- function saveCart(Storage){
-    localStorage.setItem("produit",JSON.stringify(Storage));
-}
-
 // Cette fonction permet d'ajouter le produit au panier
-function addToCart(sofa){
-    if (choiceQuantity.value > 0 && choiceQuantity.value <=100 && choiceQuantity.value != 0){
+function addToCart(){
+    //Recupération du choix de la couleur
+    let choixCouleur = choiceColor.value;
+    if(choixCouleur == "") {
+        alert("veuillez choisir une couleur");
+        return;
+    }
+    
+    //Recupération du choix de la quantité
+    let choixQuantite = choiceQuantity.value;
+    if (Number(choixQuantite) < 1 || Number(choixQuantite) > 100) {
+        alert("veuillez choisir une quantitée entre 1 et 100");
+        return;
+    }
 
-        //Recupération du choix de la couleur
-        let choixCouleur = choiceColor.value;
-        if (choixCouleur == "") {
-            alert("veuillez choisir une couleur");
-            return;
-        }
-                    
-        //Recupération du choix de la quantité
-        let choixQuantite = choiceQuantity.value;
-
-        
-
-
-
-         
+    else {
         //Récupération des options de l'article à ajouter au panier
         let optionsProduit = {
             idProduit: idProduct,
@@ -113,22 +109,20 @@ function addToCart(sofa){
                 resultFind.quantiteProduit = newQuantite;
                 saveCart(Storage);
                 console.table(Storage);
-                popupConfirmation();
+               
             //Si le produit commandé n'est pas dans le panier
             } else {
                 Storage.push(optionsProduit);
                 saveCart(Storage);
                 console.table(Storage);
-                popupConfirmation();
             }
         //Si le panier est vide
         } else {
             Storage =[];
-            popupConfirmation();
             Storage.push(optionsProduit);
             saveCart(Storage);
             console.table(Storage);
         }
-    }
+    }   
 }  
 
