@@ -68,12 +68,12 @@ joinEvent();
 function joinEvent(){
     const button_addToCart = document.querySelector("#addToCart");
     button_addToCart.addEventListener("click",  (event)=>{
-        addToCart();
+        addToCart(sofa);
     })
 }
 
 // Cette fonction permet d'ajouter le produit au panier
-function addToCart(){
+function addToCart(sofa){
     //Recupération du choix de la couleur
     let choixCouleur = choiceColor.value;
     if(choixCouleur == "") {
@@ -94,6 +94,7 @@ function addToCart(){
             idProduit: idProduct,
             couleurProduit: choixCouleur,
             quantiteProduit: Number(choixQuantite),
+            prixProduit : sofa.price
         };
 
         //Importation dans le local storage
