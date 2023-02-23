@@ -38,8 +38,7 @@ function getSofas(optionsProduit) {
                     .then(async function(sofa) {
                         displaySofas(sofa, optionsProduit);
                     })
-                    .then(removeFromCart)
-             
+            
             } else {
                 emptyCart(response);
             }
@@ -132,7 +131,7 @@ function displaySofas(sofa, optionsProduit) {
    articleSupprimer.className = "deleteItem";
    articleSupprimer.innerHTML = "Supprimer";
  
-
+    // Calculer le total du prix total
     let total = 0;
     for(let optionsProduit in Storage){
         total += (Storage[optionsProduit].quantiteProduit * sofa.price)
@@ -141,46 +140,41 @@ function displaySofas(sofa, optionsProduit) {
     productTotalPrice.innerHTML = total;
     console.log(total)
 
-
     let qttChange = document.querySelectorAll(".itemQuantity");
-
-    for (let sofa in Storage){
-        qttChange[sofa].addEventListener("change" , (event) => {
+ 
+    for (let optionsProduit in Storage){
+        qttChange[optionsProduit].addEventListener("change" , (event) => {
             event.preventDefault();
 
-            let quantityChange = Storage[sofa].quantiteProduit;
-            let qttChangeValue = qttChange[sofa].valueAsNumber;
+            let quantityChange = Storage[optionsProduit].quantiteProduit;
+            let qttChangeValue = qttChange[optionsProduit].valueAsNumber;
             
             const FindSofa = Storage.find((el) => el.qttChangeValue !== quantityChange);
             
             FindSofa.quantiteProduit = qttChangeValue;
-            Storage[sofa].quantiteProduit = FindSofa.quantiteProduit;
+            Storage[optionsProduit].quantiteProduit = FindSofa.quantiteProduit;
 
             saveCart(Storage);   
             // refresh rapide
             location.reload();
         })
     }
-
-   
-
-
-
-
-    }
-
-function getNumberProduct(){
-    let number = 0;
-    for(let optionsProduit in Storage){
-     number += Storage[optionsProduit].quantiteProduit
-    }
-    let productTotalQuantity = document.getElementById('totalQuantity');
-    productTotalQuantity.innerHTML = number;
-    console.log(number);
 }
-getNumberProduct();
 
- // Cette fonction permet de retirer un produit du panier
+
+ function getNumberProduct(){
+   // Afficher le nombre de produits présents dans le panier
+   let number = 0;
+   for(let optionsProduit in Storage){
+    number += Storage[optionsProduit].quantiteProduit
+   }
+   let productTotalQuantity = document.getElementById('totalQuantity');
+   productTotalQuantity.innerHTML = number;
+   console.log(number);
+ }
+
+ getNumberProduct()
+
  function removeFromCart(){
     let button_remove = document.querySelectorAll(".deleteItem");
     for(let optionsProduit in Storage){
@@ -200,9 +194,6 @@ getNumberProduct();
     }
 }
 removeFromCart()
- 
-
-
 
 
 
