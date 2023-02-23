@@ -132,21 +132,43 @@ function displaySofas(sofa, optionsProduit) {
    articleSupprimer.className = "deleteItem";
    articleSupprimer.innerHTML = "Supprimer";
  
-}
-
-function getTotalPrice(){
 
     let total = 0;
     for(let optionsProduit in Storage){
-     total += Storage[optionsProduit].quantiteProduit * Storage[optionsProduit].price;
-    }
+        total += (Storage[optionsProduit].quantiteProduit * sofa.price)
+       }
     let productTotalPrice = document.getElementById('totalPrice');
     productTotalPrice.innerHTML = total;
     console.log(total)
- }
- getTotalPrice();
 
- 
+
+    let qttChange = document.querySelectorAll(".itemQuantity");
+
+    for (let sofa in Storage){
+        qttChange[sofa].addEventListener("change" , (event) => {
+            event.preventDefault();
+
+            let quantityChange = Storage[sofa].quantiteProduit;
+            let qttChangeValue = qttChange[sofa].valueAsNumber;
+            
+            const FindSofa = Storage.find((el) => el.qttChangeValue !== quantityChange);
+            
+            FindSofa.quantiteProduit = qttChangeValue;
+            Storage[sofa].quantiteProduit = FindSofa.quantiteProduit;
+
+            saveCart(Storage);   
+            // refresh rapide
+            location.reload();
+        })
+    }
+
+   
+
+
+
+
+    }
+
 function getNumberProduct(){
     let number = 0;
     for(let optionsProduit in Storage){
@@ -179,8 +201,6 @@ getNumberProduct();
 }
 removeFromCart()
  
-
-
 
 
 
