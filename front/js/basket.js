@@ -13,11 +13,10 @@ const positionEmptyCart = document.querySelector("#cart__items");
 function getCart() {
     if (Storage) {
         for (let sofa of Storage) {
-            let optionsProduit = {
+           optionsProduit = {
                 idProduit: sofa.idProduit,
                 couleurProduit: sofa.couleurProduit,
                 quantiteProduit: sofa.quantiteProduit,
-                prixProduit : sofa.price
             };
             getSofas(sofa);
         }
@@ -39,7 +38,7 @@ function getSofas(optionsProduit) {
                     .then(async function(sofa) {
                         displaySofas(sofa, optionsProduit);
                     })
-                    .then(addEventListener)
+         
              
             } else {
                 emptyCart(response);
@@ -94,9 +93,8 @@ function displaySofas(sofa, optionsProduit) {
    // Insertion du prix
    let articlePrice = document.createElement("p");
    articleItemContentTitlePrice.appendChild(articlePrice);
-   articlePrice.innerHTML = optionsProduit.prixProduit + " €";
+   articlePrice.innerHTML = sofa.price + " €";
 
-  
 
    // Insertion de l'élément "div"
    let articleItemContentSettings = document.createElement("div");
@@ -140,7 +138,7 @@ function getTotalPrice(){
 
     let total = 0;
     for(let optionsProduit in Storage){
-     total += Storage[optionsProduit].quantiteProduit * Storage[optionsProduit].prixProduit;
+     total += Storage[optionsProduit].quantiteProduit * Storage[optionsProduit].price;
     }
     let productTotalPrice = document.getElementById('totalPrice');
     productTotalPrice.innerHTML = total;
