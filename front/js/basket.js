@@ -38,8 +38,7 @@ function getSofas(optionsProduit) {
                     .then(async function(sofa) {
                         displaySofas(sofa, optionsProduit);
                     })
-                    .then(removeFromCart)
-             
+            
             } else {
                 emptyCart(response);
             }
@@ -132,33 +131,50 @@ function displaySofas(sofa, optionsProduit) {
    articleSupprimer.className = "deleteItem";
    articleSupprimer.innerHTML = "Supprimer";
  
-}
-
-function getTotalPrice(){
-
+    // Calculer le total du prix total
     let total = 0;
     for(let optionsProduit in Storage){
-     total += Storage[optionsProduit].quantiteProduit * Storage[optionsProduit].price;
-    }
+        total += (Storage[optionsProduit].quantiteProduit * sofa.price)
+       }
     let productTotalPrice = document.getElementById('totalPrice');
     productTotalPrice.innerHTML = total;
     console.log(total)
- }
- getTotalPrice();
 
+    let qttChange = document.querySelectorAll(".itemQuantity");
  
-function getNumberProduct(){
-    let number = 0;
-    for(let optionsProduit in Storage){
-     number += Storage[optionsProduit].quantiteProduit
-    }
-    let productTotalQuantity = document.getElementById('totalQuantity');
-    productTotalQuantity.innerHTML = number;
-    console.log(number);
-}
-getNumberProduct();
+    for (let optionsProduit in Storage){
+        qttChange[optionsProduit].addEventListener("change" , (event) => {
+            event.preventDefault();
 
- // Cette fonction permet de retirer un produit du panier
+            let quantityChange = Storage[optionsProduit].quantiteProduit;
+            let qttChangeValue = qttChange[optionsProduit].valueAsNumber;
+            
+            const FindSofa = Storage.find((el) => el.qttChangeValue !== quantityChange);
+            
+            FindSofa.quantiteProduit = qttChangeValue;
+            Storage[optionsProduit].quantiteProduit = FindSofa.quantiteProduit;
+
+            saveCart(Storage);   
+            // refresh rapide
+            location.reload();
+        })
+    }
+}
+
+
+ function getNumberProduct(){
+   // Afficher le nombre de produits présents dans le panier
+   let number = 0;
+   for(let optionsProduit in Storage){
+    number += Storage[optionsProduit].quantiteProduit
+   }
+   let productTotalQuantity = document.getElementById('totalQuantity');
+   productTotalQuantity.innerHTML = number;
+   console.log(number);
+ }
+
+ getNumberProduct()
+
  function removeFromCart(){
     let button_remove = document.querySelectorAll(".deleteItem");
     for(let optionsProduit in Storage){
@@ -178,11 +194,6 @@ getNumberProduct();
     }
 }
 removeFromCart()
- 
-
-
-
-
 
 
 
