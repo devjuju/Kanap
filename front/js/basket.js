@@ -38,7 +38,7 @@ function getSofas(optionsProduit) {
                     .then(async function(sofa) {
                         displaySofas(sofa, optionsProduit);
                     })
-         
+                    .then(removeFromCart)
              
             } else {
                 emptyCart(response);
@@ -158,36 +158,26 @@ function getNumberProduct(){
 }
 getNumberProduct();
 
-
-function addEventListener(){
+ // Cette fonction permet de retirer un produit du panier
+ function removeFromCart(){
     let button_remove = document.querySelectorAll(".deleteItem");
     for(let optionsProduit in Storage){
         button_remove[optionsProduit].addEventListener("click" , (event) => {
             event.preventDefault();
-            alert("Ce produit a bien été supprimé du panier");
-            deleteSofa();
-        });
-    }
 
-    let qttChange = document.querySelectorAll(".itemQuantity");
-    for(let optionsProduit in Storage){
-        qttChange[optionsProduit].addEventListener("change" , (event) => {
-        event.preventDefault();
-   
+            let idRemove = Storage[optionsProduit].idProduit;
+            let colorRemove = Storage[optionsProduit].couleurProduit;
+
+            Storage = Storage.filter( el => el.idProduit !== idRemove || el.couleurProduit !== colorRemove );
+
+            saveCart(Storage)
+            
+            alert("Ce produit a bien été supprimé du panier");
+            location.reload();
         })
     }
 }
-
-// Cette fonction permet de retirer un produit du panier
-function deleteSofa(){
-    for(let optionsProduit in Storage){
-        let idRemove = optionsProduit.idProduit;
-        let colorRemove = optionsProduit.couleurProduit;
-        optionsProduit = Storage.filter( el => el.idProduit !== idRemove || el.couleurProduit !== colorRemove );
-    }
-    saveCart(Storage);
-}
-deleteSofa();
+removeFromCart()
  
 
 
