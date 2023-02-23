@@ -95,7 +95,6 @@ function displaySofas(sofa, optionsProduit) {
    articleItemContentTitlePrice.appendChild(articlePrice);
    articlePrice.innerHTML = sofa.price + " €";
 
-  
 
    // Insertion de l'élément "div"
    let articleItemContentSettings = document.createElement("div");
@@ -139,7 +138,7 @@ function getTotalPrice(){
 
     let total = 0;
     for(let optionsProduit in Storage){
-     total += Storage[optionsProduit].quantiteProduit * Storage[optionsProduit].prixProduit;
+     total += Storage[optionsProduit].quantiteProduit * Storage[optionsProduit].price;
     }
     let productTotalPrice = document.getElementById('totalPrice');
     productTotalPrice.innerHTML = total;
