@@ -56,6 +56,7 @@ function getPost(sofa){
         articleColors.value = colors;
         articleColors.innerHTML = colors;
     }
+   
 }
 // Cette fonction permet d'enregistrer le panier dans le localStorage
 // L'idée est d'enregistrer une valeur par rapport à une clé
