@@ -2,7 +2,6 @@
 let Storage = JSON.parse(localStorage.getItem("produit"));
 console.table(Storage);
 
-
 // Cette fonction permet d'enregistrer le panier dans le localStorage
 // L'idée est d'enregistrer une valeur par rapport à une clé
 function saveCart(Storage){
@@ -10,19 +9,18 @@ function saveCart(Storage){
 }
 
 const positionEmptyCart = document.querySelector("#cart__items");
+
 function getCart() {
     if (Storage) {
         for (let sofa of Storage) {
-           optionsProduit = {
+          let optionsProduit = {
                 idProduit: sofa.idProduit,
                 couleurProduit: sofa.couleurProduit,
                 quantiteProduit: sofa.quantiteProduit,
             };
             getSofas(sofa);
         }
-    } else {
-        // alert("Votre panier est vide");
-        emptyCart("Votre panier est vide!");
+    } else if (Storage === null || Storage == 0){
         const emptyCart = `<p>Votre panier est vide</p>`;
         positionEmptyCart.innerHTML = emptyCart;
     }
@@ -31,14 +29,15 @@ getCart();
 
 
 function getSofas(optionsProduit) {
-    fetch("http://localhost:3000/api/products/" + optionsProduit.idProduit)
+    const apiURL = "http://localhost:3000/api/products/";
+    fetch(apiURL + optionsProduit.idProduit)
         .then(function(response) {
             if (response.ok) {
                 response.json()
                     .then(async function(sofa) {
                         displaySofas(sofa, optionsProduit);
                     })
-            
+             
             } else {
                 emptyCart(response);
             }
@@ -131,7 +130,7 @@ function displaySofas(sofa, optionsProduit) {
    articleSupprimer.className = "deleteItem";
    articleSupprimer.innerHTML = "Supprimer";
  
-    // Calculer le total du prix total
+    // Calculer le prix total
     let total = 0;
     for(let optionsProduit in Storage){
         total += (Storage[optionsProduit].quantiteProduit * sofa.price)
@@ -140,30 +139,7 @@ function displaySofas(sofa, optionsProduit) {
     productTotalPrice.innerHTML = total;
     console.log(total)
 
-    let qttChange = document.querySelectorAll(".itemQuantity");
- 
-    for (let optionsProduit in Storage){
-        qttChange[optionsProduit].addEventListener("change" , (event) => {
-            event.preventDefault();
-
-            let quantityChange = Storage[optionsProduit].quantiteProduit;
-            let qttChangeValue = qttChange[optionsProduit].valueAsNumber;
-            
-            const FindSofa = Storage.find((el) => el.qttChangeValue !== quantityChange);
-            
-            FindSofa.quantiteProduit = qttChangeValue;
-            Storage[optionsProduit].quantiteProduit = FindSofa.quantiteProduit;
-
-            saveCart(Storage);   
-            // refresh rapide
-            location.reload();
-        })
-    }
-}
-
-
- function getNumberProduct(){
-   // Afficher le nombre de produits présents dans le panier
+    // Afficher le nombre de produits présents dans le panier
    let number = 0;
    for(let optionsProduit in Storage){
     number += Storage[optionsProduit].quantiteProduit
@@ -171,29 +147,63 @@ function displaySofas(sofa, optionsProduit) {
    let productTotalQuantity = document.getElementById('totalQuantity');
    productTotalQuantity.innerHTML = number;
    console.log(number);
- }
 
- getNumberProduct()
+    // Changer la quantité du produit
+    let qttChange = document.querySelectorAll(".itemQuantity");
+ 
+     for (let optionsProduit in Storage){
+         qttChange[optionsProduit].addEventListener("change" , (event) => {
+             event.preventDefault();
+ 
+             let quantityChange = Storage[optionsProduit].quantiteProduit;
+             let qttChangeValue = qttChange[optionsProduit].valueAsNumber;
+             
+             const FindSofa = Storage.find((el) => el.qttChangeValue !== quantityChange);
+             
+             FindSofa.quantiteProduit = qttChangeValue;
+             Storage[optionsProduit].quantiteProduit = FindSofa.quantiteProduit;
+ 
+             saveCart(Storage);   
+             // refresh rapide
+             location.reload();
+         })
+     }
 
- function removeFromCart(){
+    // Supprimer son produit
     let button_remove = document.querySelectorAll(".deleteItem");
     for(let optionsProduit in Storage){
-        button_remove[optionsProduit].addEventListener("click" , (event) => {
-            event.preventDefault();
+        button_remove[optionsProduit].addEventListener("click" , (event) =>{
 
-            let idRemove = Storage[optionsProduit].idProduit;
-            let colorRemove = Storage[optionsProduit].couleurProduit;
+        event.preventDefault();
 
-            Storage = Storage.filter( el => el.idProduit !== idRemove || el.couleurProduit !== colorRemove );
+        let idRemove = Storage[optionsProduit].idProduit;
+        let colorRemove = Storage[optionsProduit].couleurProduit;
 
-            saveCart(Storage)
-            
-            alert("Ce produit a bien été supprimé du panier");
-            location.reload();
+        Storage[optionsProduit].idProduit = optionsProduit.idProduit;
+        Storage[optionsProduit].couleurProduit = optionsProduit.couleurProduit;
+
+        Storage = Storage.filter( el => el.idProduit !== idRemove || el.couleurProduit !== colorRemove ); 
+
+        saveCart(Storage);
+
+        alert("Ce produit a bien été supprimé du panier");
+        location.reload();
+
         })
     }
+       
+ 
+    
+
+    
+
+
+    
 }
-removeFromCart()
+
+
+
+
 
 
 
