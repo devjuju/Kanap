@@ -2,7 +2,6 @@
 let Storage = JSON.parse(localStorage.getItem("produit"));
 console.table(Storage);
 
-
 // Cette fonction permet d'enregistrer le panier dans le localStorage
 // L'idée est d'enregistrer une valeur par rapport à une clé
 function saveCart(Storage){
@@ -10,20 +9,18 @@ function saveCart(Storage){
 }
 
 const positionEmptyCart = document.querySelector("#cart__items");
+
 function getCart() {
     if (Storage) {
         for (let sofa of Storage) {
-            let optionsProduit = {
+          optionsProduit = {
                 idProduit: sofa.idProduit,
                 couleurProduit: sofa.couleurProduit,
                 quantiteProduit: sofa.quantiteProduit,
-                prixProduit : sofa.price
             };
-            getSofas(sofa);
+            getSofas(optionsProduit);
         }
     } else {
-        // alert("Votre panier est vide");
-        emptyCart("Votre panier est vide!");
         const emptyCart = `<p>Votre panier est vide</p>`;
         positionEmptyCart.innerHTML = emptyCart;
     }
@@ -39,7 +36,6 @@ function getSofas(optionsProduit) {
                     .then(async function(sofa) {
                         displaySofas(sofa, optionsProduit);
                     })
-                    .then(addEventListener)
              
             } else {
                 emptyCart(response);
@@ -96,6 +92,7 @@ function displaySofas(sofa, optionsProduit) {
    articleItemContentTitlePrice.appendChild(articlePrice);
    articlePrice.innerHTML = sofa.price + " €";
 
+
    // Insertion de l'élément "div"
    let articleItemContentSettings = document.createElement("div");
    articleItemContent.appendChild(articleItemContentSettings);
@@ -132,89 +129,78 @@ function displaySofas(sofa, optionsProduit) {
    articleSupprimer.className = "deleteItem";
    articleSupprimer.innerHTML = "Supprimer";
  
-}
-
-function getTotalPrice(){
-    let itemQuantity = document.getElementsByClassName("itemQuantity");
-    let quantiteItem = itemQuantity.itemlength;
-    
+    // Calculer le prix total
     let total = 0;
-    for(let i = 0 ; i< quantiteItem; ++i){
-     total += (itemQuantity[i].valueAsNumber * sofa.price)
-    }
+    for(let optionsProduit in Storage){
+        total += (Storage[optionsProduit].quantiteProduit * sofa.price)
+       }
     let productTotalPrice = document.getElementById('totalPrice');
     productTotalPrice.innerHTML = total;
     console.log(total)
- }
- getTotalPrice();
 
+    // Afficher le nombre de produits présents dans le panier
+   let number = 0;
+   for(let optionsProduit in Storage){
+    number += Storage[optionsProduit].quantiteProduit
+   }
+   let productTotalQuantity = document.getElementById('totalQuantity');
+   productTotalQuantity.innerHTML = number;
+   console.log(number);
+
+    // Changer la quantité du produit
+    let qttChange = document.querySelectorAll(".itemQuantity");
  
-function getNumberProduct(){
-    let number = 0;
-    for(let optionsProduit in Storage){
-     number += Storage[optionsProduit].quantiteProduit
-    }
-    let productTotalQuantity = document.getElementById('totalQuantity');
-    productTotalQuantity.innerHTML = number;
-    console.log(number);
-}
-getNumberProduct();
+     for (let optionsProduit in Storage){
+         qttChange[optionsProduit].addEventListener("change" , (event) => {
+             event.preventDefault();
+ 
+             let quantityChange = Storage[optionsProduit].quantiteProduit;
+             let qttChangeValue = qttChange[optionsProduit].valueAsNumber;
+             
+             const FindSofa = Storage.find((el) => el.qttChangeValue !== quantityChange);
+             
+             FindSofa.quantiteProduit = qttChangeValue;
+             Storage[optionsProduit].quantiteProduit = FindSofa.quantiteProduit;
+ 
+             saveCart(Storage);   
+             // refresh rapide
+             location.reload();
+         })
+     }
 
-
-function addEventListener(){
+    // Supprimer son produit
     let button_remove = document.querySelectorAll(".deleteItem");
     for(let optionsProduit in Storage){
-        button_remove[optionsProduit].addEventListener("click" , (event) => {
-            event.preventDefault();
-            alert("Ce produit a bien été supprimé du panier");
-            deleteSofa();
-        });
-    }
+        button_remove[optionsProduit].addEventListener("click" , (event) =>{
 
-    let qttChange = document.querySelectorAll(".itemQuantity");
-    for(let optionsProduit in Storage){
-        qttChange[optionsProduit].addEventListener("change" , (event) => {
         event.preventDefault();
-   
+
+        let idRemove = Storage[optionsProduit].idProduit;
+        let colorRemove = Storage[optionsProduit].couleurProduit;
+
+        Storage[optionsProduit].idProduit = optionsProduit.idProduit;
+        Storage[optionsProduit].couleurProduit = optionsProduit.couleurProduit;
+
+        Storage = Storage.filter( el => el.idProduit !== idRemove || el.couleurProduit !== colorRemove ); 
+
+        saveCart(Storage);
+
+        alert("Ce produit a bien été supprimé du panier");
+        location.reload();
+
         })
     }
-}
-
-// Cette fonction permet de retirer un produit du panier
-function deleteSofa(){
-    for(let optionsProduit in Storage){
-        let idRemove = optionsProduit.idProduit;
-        let colorRemove = optionsProduit.couleurProduit;
-        optionsProduit = Storage.filter( el => el.idProduit !== idRemove || el.couleurProduit !== colorRemove );
-    }
-    saveCart(Storage);
-}
-deleteSofa();
+       
  
+    
 
- 
-function changeQuantity() {
-    let qttChange = document.querySelectorAll(".itemQuantity");
+    
 
-    for (let optionsProduit in Storage){
-        qttChange[optionsProduit].addEventListener("change" , (event) => {
-            event.preventDefault();
 
-            let quantityChange = Storage[optionsProduit].quantiteProduit;
-            let qttChangeValue = qttChange[optionsProduit].valueAsNumber;
-            
-            const FindSofa = Storage.find((el) => el.qttChangeValue !== quantityChange);
-            
-            FindSofa.quantiteProduit = qttChangeValue;
-            Storage[optionsProduit].quantiteProduit = FindSofa.quantiteProduit;
-
-            saveCart(Storage);   
-            // refresh rapide
-            location.reload();
-        })
-    }
+    
 }
-changeQuantity();
+
+
 
 
 
