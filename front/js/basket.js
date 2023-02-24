@@ -13,14 +13,14 @@ const positionEmptyCart = document.querySelector("#cart__items");
 function getCart() {
     if (Storage) {
         for (let sofa of Storage) {
-          let optionsProduit = {
+          optionsProduit = {
                 idProduit: sofa.idProduit,
                 couleurProduit: sofa.couleurProduit,
                 quantiteProduit: sofa.quantiteProduit,
             };
-            getSofas(sofa);
+            getSofas(optionsProduit);
         }
-    } else if (Storage === null || Storage == 0){
+    } else {
         const emptyCart = `<p>Votre panier est vide</p>`;
         positionEmptyCart.innerHTML = emptyCart;
     }
@@ -29,8 +29,7 @@ getCart();
 
 
 function getSofas(optionsProduit) {
-    const apiURL = "http://localhost:3000/api/products/";
-    fetch(apiURL + optionsProduit.idProduit)
+    fetch("http://localhost:3000/api/products/" + optionsProduit.idProduit)
         .then(function(response) {
             if (response.ok) {
                 response.json()

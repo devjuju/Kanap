@@ -13,14 +13,14 @@ const positionEmptyCart = document.querySelector("#cart__items");
 function getCart() {
     if (Storage) {
         for (let sofa of Storage) {
-          let optionsProduit = {
+          optionsProduit = {
                 idProduit: sofa.idProduit,
                 couleurProduit: sofa.couleurProduit,
                 quantiteProduit: sofa.quantiteProduit,
             };
             getSofas(optionsProduit);
         }
-    } else{
+    } else {
         const emptyCart = `<p>Votre panier est vide</p>`;
         positionEmptyCart.innerHTML = emptyCart;
     }
@@ -28,25 +28,26 @@ function getCart() {
 getCart();
 
 
-function getSofas(optionsProduit) {
-    fetch("http://localhost:3000/api/products/" + optionsProduit.idProduit)
-        .then(function(response) {
-            if (response.ok) {
-                response.json()
-                    .then(async function(sofa) {
-                        displaySofas(sofa, optionsProduit);
-                    })
-             
-            } else {
-                emptyCart(response);
-            }
-        })
-        .catch(function(err) {
-            emptyCart(err);
-        });
+// Récupération des articles de l'API
+async function getSofas(optionsProduit) {
+    var sofasCatch = await fetch("http://localhost:3000/api/products" + optionsProduit.idProduit)
+    return await sofasCatch.json();
 }
 
 
+// Répartition des données de l'API dans le DOM
+async function fillSection() {
+    var result = await getSofas ()
+    .then(function (resultatAPI){
+        const sofa = resultatAPI;
+        console.table(sofa);
+        displaySofas(sofa, optionsProduit);
+        
+    })
+    .catch (function(error){
+        return error;
+    });
+}
 
 function displaySofas(sofa, optionsProduit) {
    // Insertion de l'élément "article"
