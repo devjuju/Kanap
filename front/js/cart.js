@@ -13,14 +13,9 @@ const positionEmptyCart = document.querySelector("#cart__items");
 function getCart() {
     if (Storage) {
         for (let sofa of Storage) {
-          optionsProduit = {
-                idProduit: sofa.idProduit,
-                couleurProduit: sofa.couleurProduit,
-                quantiteProduit: sofa.quantiteProduit,
-            };
-            getSofas(optionsProduit);
+            getSofas(sofa);
         }
-    } else {
+    } else if (Storage === null || Storage == 0) {
         const emptyCart = `<p>Votre panier est vide</p>`;
         positionEmptyCart.innerHTML = emptyCart;
     }
@@ -28,33 +23,18 @@ function getCart() {
 getCart();
 
 
-// Récupération des articles de l'API
-async function getSofas(optionsProduit) {
-    var sofasCatch = await fetch("http://localhost:3000/api/products" + optionsProduit.idProduit)
-    return await sofasCatch.json();
-}
-
-
-// Répartition des données de l'API dans le DOM
-async function fillSection() {
-    var result = await getSofas ()
-    .then(function (resultatAPI){
-        const sofa = resultatAPI;
-        console.table(sofa);
-        displaySofas(sofa, optionsProduit);
-        
-    })
-    .catch (function(error){
-        return error;
-    });
-}
-
-function displaySofas(sofa, optionsProduit) {
-   // Insertion de l'élément "article"
+function getSofas(sofa) {
+    fetch("http://localhost:3000/api/products/" + sofa.idProduit)
+        .then(function(response) {
+            if (response.ok) {
+                response.json()
+                    .then(async function(sofa) {
+                        for(sofa in Storage){
+                             // Insertion de l'élément "article"
    let articleSofa = document.createElement("article");
    document.querySelector("#cart__items").appendChild(articleSofa);
    articleSofa.className = "cart__item";
-   articleSofa.setAttribute('data-id', optionsProduit.idProduit);
+   articleSofa.setAttribute('data-id', Storage[sofa].idProduit);
 
    // Insertion de l'élément "div"
    let articleDivImg = document.createElement("div");
@@ -64,8 +44,8 @@ function displaySofas(sofa, optionsProduit) {
    // Insertion de l'image
    let articleImg = document.createElement("img");
    articleDivImg.appendChild(articleImg);
-   articleImg.src = sofa.imageUrl;
-   articleImg.alt = sofa.altTxt;
+   articleImg.src = Storage[sofa].imageUrl;
+   articleImg.alt = Storage[sofa].altTxt;
    
    // Insertion de l'élément "div"
    let articleItemContent = document.createElement("div");
@@ -80,18 +60,18 @@ function displaySofas(sofa, optionsProduit) {
    // Insertion du titre h3
    let articleTitle = document.createElement("h2");
    articleItemContentTitlePrice.appendChild(articleTitle);
-   articleTitle.innerHTML = sofa.name;
+   articleTitle.innerHTML = Storage[sofa].name;
 
    // Insertion de la couleur
    let articleColor = document.createElement("p");
    articleTitle.appendChild(articleColor);
-   articleColor.innerHTML = optionsProduit.couleurProduit;
+   articleColor.innerHTML = Storage[sofa].couleurProduit;
    articleColor.style.fontSize = "20px";
 
    // Insertion du prix
    let articlePrice = document.createElement("p");
    articleItemContentTitlePrice.appendChild(articlePrice);
-   articlePrice.innerHTML = sofa.price + " €";
+   articlePrice.innerHTML = Storage[sofa].price + " €";
 
 
    // Insertion de l'élément "div"
@@ -112,7 +92,7 @@ function displaySofas(sofa, optionsProduit) {
    // Insertion de la quantité
    let articleQuantity = document.createElement("input");
    articleItemContentSettingsQuantity.appendChild(articleQuantity);
-   articleQuantity.value = optionsProduit.quantiteProduit;
+   articleQuantity.value = Storage[sofa].quantiteProduit;
    articleQuantity.className = "itemQuantity";
    articleQuantity.setAttribute("type", "number");
    articleQuantity.setAttribute("min", "1");
@@ -129,79 +109,31 @@ function displaySofas(sofa, optionsProduit) {
    articleItemContentSettingsDelete.appendChild(articleSupprimer);
    articleSupprimer.className = "deleteItem";
    articleSupprimer.innerHTML = "Supprimer";
- 
-    // Calculer le prix total
-    let total = 0;
-    for(let optionsProduit in Storage){
-        total += (Storage[optionsProduit].quantiteProduit * sofa.price)
-       }
-    let productTotalPrice = document.getElementById('totalPrice');
-    productTotalPrice.innerHTML = total;
-    console.log(total)
-
-    // Afficher le nombre de produits présents dans le panier
-   let number = 0;
-   for(let optionsProduit in Storage){
-    number += Storage[optionsProduit].quantiteProduit
-   }
-   let productTotalQuantity = document.getElementById('totalQuantity');
-   productTotalQuantity.innerHTML = number;
-   console.log(number);
-
-    // Changer la quantité du produit
-    let qttChange = document.querySelectorAll(".itemQuantity");
- 
-     for (let optionsProduit in Storage){
-         qttChange[optionsProduit].addEventListener("change" , (event) => {
-             event.preventDefault();
- 
-             let quantityChange = Storage[optionsProduit].quantiteProduit;
-             let qttChangeValue = qttChange[optionsProduit].valueAsNumber;
+                        }
+                    })
              
-             const FindSofa = Storage.find((el) => el.qttChangeValue !== quantityChange);
-             
-             FindSofa.quantiteProduit = qttChangeValue;
-             Storage[optionsProduit].quantiteProduit = FindSofa.quantiteProduit;
- 
-             saveCart(Storage);   
-             // refresh rapide
-             location.reload();
-         })
-     }
-
-    // Supprimer son produit
-    let button_remove = document.querySelectorAll(".deleteItem");
-    for(let optionsProduit in Storage){
-        button_remove[optionsProduit].addEventListener("click" , (event) =>{
-
-        event.preventDefault();
-
-        let idRemove = Storage[optionsProduit].idProduit;
-        let colorRemove = Storage[optionsProduit].couleurProduit;
-
-        Storage[optionsProduit].idProduit = optionsProduit.idProduit;
-        Storage[optionsProduit].couleurProduit = optionsProduit.couleurProduit;
-
-        Storage = Storage.filter( el => el.idProduit !== idRemove || el.couleurProduit !== colorRemove ); 
-
-        saveCart(Storage);
-
-        alert("Ce produit a bien été supprimé du panier");
-        location.reload();
-
+            } else {
+                emptyCart(response);
+            }
         })
-    }
-       
- 
-    
-
-    
-
-
-    
+        .catch(function(err) {
+            emptyCart(err);
+        });
 }
 
-
+function changeQuantity() {
+    for(let sofa in Storage){
+        let quantityChange = Storage[sofa].quantiteProduit;
+        let qttChangeValue = qttChange[sofa].valueAsNumber;
+            
+        const FindSofa = Storage.find((el) => el.qttChangeValue !== quantityChange);
+            
+        FindSofa.quantiteProduit = qttChangeValue;
+        Storage[sofa].quantiteProduit = FindSofa.quantiteProduit;
+    }
+    saveCart(Storage);   
+}
+changeQuantity();
 
 
 

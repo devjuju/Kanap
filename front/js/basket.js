@@ -146,7 +146,7 @@ function getCart() {
 
     // Supprimer son produit
     let button_remove = document.querySelectorAll(".deleteItem");
-    for(let optionsProduit in Storage){
+   
         button_remove[optionsProduit].addEventListener("click" , (event) =>{
 
         event.preventDefault();
@@ -157,14 +157,14 @@ function getCart() {
         Storage[optionsProduit].idProduit = optionsProduit.idProduit;
         Storage[optionsProduit].couleurProduit = optionsProduit.couleurProduit;
 
-        Storage = Storage.filter( el => el.idProduit !== idRemove || el.couleurProduit !== colorRemove ); 
-
-        saveCart(Storage);
+        cartContent = Storage.filter( el => el.idProduit !== idRemove || el.couleurProduit !== colorRemove ); 
+        event.target.closest(".cart__Item").remove();
+        localStorage.setItem("produit",JSON.stringify(cartContent));
 
         alert("Ce produit a bien été supprimé du panier");
         location.reload();
         })
-    }
+   
 
 
 
