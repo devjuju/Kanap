@@ -2,138 +2,170 @@
 let Storage = JSON.parse(localStorage.getItem("produit"));
 console.table(Storage);
 
-// Cette fonction permet d'enregistrer le panier dans le localStorage
-// L'idée est d'enregistrer une valeur par rapport à une clé
-function saveCart(Storage){
-    localStorage.setItem("produit",JSON.stringify(Storage));
-}
-
 const positionEmptyCart = document.querySelector("#cart__items");
 
-function getCart() {
-    if (Storage) {
-        for (let sofa of Storage) {
-            getSofas(sofa);
-        }
-    } else if (Storage === null || Storage == 0) {
+function getCart(){
+    if (Storage === null || Storage == 0) {
         const emptyCart = `<p>Votre panier est vide</p>`;
         positionEmptyCart.innerHTML = emptyCart;
-    }
-}
-getCart();
+    } else{
+        for (let sofa of Storage){
+            let optionsProduit = {
+                idProduit: sofa.idProduit,
+                couleurProduit: sofa.couleurProduit,
+                quantiteProduit: sofa.quantiteProduit,
+            };
 
+            fetch("http://localhost:3000/api/products/" + optionsProduit.idProduit)
+            .then(function(response) {
+                if (response.ok) {
+                    response.json()
+                        .then(function(sofa) {
 
-function getSofas(sofa) {
-    fetch("http://localhost:3000/api/products/" + sofa.idProduit)
-        .then(function(response) {
-            if (response.ok) {
-                response.json()
-                    .then(async function(sofa) {
-                        for(sofa in Storage){
-                             // Insertion de l'élément "article"
-   let articleSofa = document.createElement("article");
-   document.querySelector("#cart__items").appendChild(articleSofa);
-   articleSofa.className = "cart__item";
-   articleSofa.setAttribute('data-id', Storage[sofa].idProduit);
+                        // Insertion de l'élément "article"
+                        let articleSofa = document.createElement("article");
+                        document.querySelector("#cart__items").appendChild(articleSofa);
+                        articleSofa.className = "cart__item";
+                        articleSofa.setAttribute('data-id', optionsProduit.idProduit);
 
-   // Insertion de l'élément "div"
-   let articleDivImg = document.createElement("div");
-   articleSofa.appendChild(articleDivImg);
-   articleDivImg.className = "cart__item__img";
+                        // Insertion de l'élément "div"
+                        let articleDivImg = document.createElement("div");
+                        articleSofa.appendChild(articleDivImg);
+                        articleDivImg.className = "cart__item__img";
 
-   // Insertion de l'image
-   let articleImg = document.createElement("img");
-   articleDivImg.appendChild(articleImg);
-   articleImg.src = Storage[sofa].imageUrl;
-   articleImg.alt = Storage[sofa].altTxt;
+                        // Insertion de l'image
+                        let articleImg = document.createElement("img");
+                        articleDivImg.appendChild(articleImg);
+                        articleImg.src = sofa.imageUrl;
+                        articleImg.alt = sofa.altTxt;
    
-   // Insertion de l'élément "div"
-   let articleItemContent = document.createElement("div");
-   articleSofa.appendChild(articleItemContent);
-   articleItemContent.className = "cart__item__content";
+                        // Insertion de l'élément "div"
+                        let articleItemContent = document.createElement("div");
+                        articleSofa.appendChild(articleItemContent);
+                        articleItemContent.className = "cart__item__content";
 
-   // Insertion de l'élément "div"
-   let articleItemContentTitlePrice = document.createElement("div");
-   articleItemContent.appendChild(articleItemContentTitlePrice);
-   articleItemContentTitlePrice.className = "cart__item__content__titlePrice";
+                        // Insertion de l'élément "div"
+                        let articleItemContentTitlePrice = document.createElement("div");
+                        articleItemContent.appendChild(articleItemContentTitlePrice);
+                        articleItemContentTitlePrice.className = "cart__item__content__titlePrice";
    
-   // Insertion du titre h3
-   let articleTitle = document.createElement("h2");
-   articleItemContentTitlePrice.appendChild(articleTitle);
-   articleTitle.innerHTML = Storage[sofa].name;
+                        // Insertion du titre h3
+                        let articleTitle = document.createElement("h2");
+                        articleItemContentTitlePrice.appendChild(articleTitle);
+                        articleTitle.innerHTML = sofa.name;
 
-   // Insertion de la couleur
-   let articleColor = document.createElement("p");
-   articleTitle.appendChild(articleColor);
-   articleColor.innerHTML = Storage[sofa].couleurProduit;
-   articleColor.style.fontSize = "20px";
+                        // Insertion de la couleur
+                        let articleColor = document.createElement("p");
+                        articleTitle.appendChild(articleColor);
+                        articleColor.innerHTML = optionsProduit.couleurProduit;
+                        articleColor.style.fontSize = "20px";
 
-   // Insertion du prix
-   let articlePrice = document.createElement("p");
-   articleItemContentTitlePrice.appendChild(articlePrice);
-   articlePrice.innerHTML = Storage[sofa].price + " €";
+                        // Insertion du prix
+                        let articlePrice = document.createElement("p");
+                        articleItemContentTitlePrice.appendChild(articlePrice);
+                        articlePrice.innerHTML = sofa.price + " €";
 
+                        // Insertion de l'élément "div"
+                        let articleItemContentSettings = document.createElement("div");
+                        articleItemContent.appendChild(articleItemContentSettings);
+                        articleItemContentSettings.className = "cart__item__content__settings";
 
-   // Insertion de l'élément "div"
-   let articleItemContentSettings = document.createElement("div");
-   articleItemContent.appendChild(articleItemContentSettings);
-   articleItemContentSettings.className = "cart__item__content__settings";
-
-   // Insertion de l'élément "div"
-   let articleItemContentSettingsQuantity = document.createElement("div");
-   articleItemContentSettings.appendChild(articleItemContentSettingsQuantity);
-   articleItemContentSettingsQuantity.className = "cart__item__content__settings__quantity";
+                        // Insertion de l'élément "div"
+                        let articleItemContentSettingsQuantity = document.createElement("div");
+                        articleItemContentSettings.appendChild(articleItemContentSettingsQuantity);
+                        articleItemContentSettingsQuantity.className = "cart__item__content__settings__quantity";
    
-   // Insertion de "Qté : "
-   let articleQte = document.createElement("p");
-   articleItemContentSettingsQuantity.appendChild(articleQte);
-   articleQte.innerHTML = "Qantité : ";
+                        // Insertion de "Qté : "
+                        let articleQte = document.createElement("p");
+                        articleItemContentSettingsQuantity.appendChild(articleQte);
+                        articleQte.innerHTML = "Qantité : ";
 
-   // Insertion de la quantité
-   let articleQuantity = document.createElement("input");
-   articleItemContentSettingsQuantity.appendChild(articleQuantity);
-   articleQuantity.value = Storage[sofa].quantiteProduit;
-   articleQuantity.className = "itemQuantity";
-   articleQuantity.setAttribute("type", "number");
-   articleQuantity.setAttribute("min", "1");
-   articleQuantity.setAttribute("max", "100");
-   articleQuantity.setAttribute("name", "itemQuantity");
+                        // Insertion de la quantité
+                        let articleQuantity = document.createElement("input");
+                        articleItemContentSettingsQuantity.appendChild(articleQuantity);
+                        articleQuantity.value = optionsProduit.quantiteProduit;
+                        articleQuantity.className = "itemQuantity";
+                        articleQuantity.setAttribute("type", "number");
+                        articleQuantity.setAttribute("min", "1");
+                        articleQuantity.setAttribute("max", "100");
+                        articleQuantity.setAttribute("name", "itemQuantity");
 
-   // Insertion de l'élément "div"
-   let articleItemContentSettingsDelete = document.createElement("div");
-   articleItemContentSettings.appendChild(articleItemContentSettingsDelete);
-   articleItemContentSettingsDelete.className = "cart__item__content__settings__delete";
+                        // Insertion de l'élément "div"
+                        let articleItemContentSettingsDelete = document.createElement("div");
+                        articleItemContentSettings.appendChild(articleItemContentSettingsDelete);
+                        articleItemContentSettingsDelete.className = "cart__item__content__settings__delete";
 
-   // Insertion de "p" supprimer
-   let articleSupprimer = document.createElement("p");
-   articleItemContentSettingsDelete.appendChild(articleSupprimer);
-   articleSupprimer.className = "deleteItem";
-   articleSupprimer.innerHTML = "Supprimer";
+                        // Insertion de "p" supprimer
+                        let articleSupprimer = document.createElement("p");
+                        articleItemContentSettingsDelete.appendChild(articleSupprimer);
+                        articleSupprimer.className = "deleteItem";
+                        articleSupprimer.innerHTML = "Supprimer";
+ 
+                        // Calculer le prix total
+                        let total = 0;
+
+                        total += optionsProduit.quantiteProduit * sofa.price;
+  
+                        let productTotalPrice = document.getElementById('totalPrice');
+                        productTotalPrice.innerHTML = total;
+                        console.log(total)
+
+                        // Afficher le nombre de produits présents dans le panier
+                        let number = 0;
+ 
+                        number += optionsProduit.quantiteProduit
+
+                        let productTotalQuantity = document.getElementById('totalQuantity');
+                        productTotalQuantity.innerHTML = number;
+                        console.log(number);
+
+                        // Changer la quantité du produit
+                        articleQuantity.addEventListener("change" , (event) => {
+                        event.preventDefault();
+        
+                        let idChange = optionsProduit.idProduit;
+                        let colorChange = optionsProduit.couleurProduit;
+           
+                        const FindSofa = Storage.find(el => el.idProduit === idChange && el.couleurProduit === colorChange);
+
+                        if(FindSofa){
+                            FindSofa.articleQuantity = Number(articleQuantity.value);
+                        } else{
+                            localStorage.setItem("produit",JSON.stringify(Storage));
                         }
+           
+                        location.reload();
                     })
-             
+  
+                    // Supprimer son produit
+                    articleSupprimer.addEventListener("click" , (event) =>{
+
+                    event.preventDefault();
+
+                    let idRemove = optionsProduit.idProduit;
+                    let colorRemove = optionsProduit.couleurProduit;
+        
+                    cartContent = Storage.filter( el => el.idProduit !== idRemove || el.couleurProduit !== colorRemove ); 
+
+                    event.target.closest(".cart__Item").remove();
+
+                    localStorage.setItem("produit",JSON.stringify(cartContent));
+
+                    alert("Ce produit a bien été supprimé du panier");
+                    location.reload();
+                })      
+            })
+                 
             } else {
                 emptyCart(response);
             }
-        })
-        .catch(function(err) {
-            emptyCart(err);
-        });
-}
-
-function changeQuantity() {
-    for(let sofa in Storage){
-        let quantityChange = Storage[sofa].quantiteProduit;
-        let qttChangeValue = qttChange[sofa].valueAsNumber;
-            
-        const FindSofa = Storage.find((el) => el.qttChangeValue !== quantityChange);
-            
-        FindSofa.quantiteProduit = qttChangeValue;
-        Storage[sofa].quantiteProduit = FindSofa.quantiteProduit;
+            })
+            .catch(function(err) {
+                emptyCart(err);
+            });
+        }
     }
-    saveCart(Storage);   
 }
-changeQuantity();
 
 
 
