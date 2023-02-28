@@ -2,8 +2,6 @@
 let Storage = JSON.parse(localStorage.getItem("produit"));
 console.table(Storage);
 
-
-
 const positionEmptyCart = document.querySelector("#cart__items");
 
 function getCart() {
@@ -174,11 +172,6 @@ function getCart() {
     }
 }
 getCart();
-
-
-
-
-
 
 
 // Cette fonction permet d'instaurater le formulaire avec regex
