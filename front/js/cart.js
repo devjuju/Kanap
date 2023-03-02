@@ -4,8 +4,27 @@ console.table(Storage);
 
 const positionEmptyCart = document.querySelector("#cart__items");
 
-function getCart() {
-    if (Storage) {
+function getCart(){
+    if (Storage === null || Storage == 0) {
+        const emptyCart = `<p>Votre panier est vide</p>`;
+        positionEmptyCart.innerHTML = emptyCart;
+
+        // Total du panier
+        let totalPrice = 0;
+
+        let articleTotalPrice = document.getElementById('totalPrice');
+        articleTotalPrice.innerHTML = totalPrice;
+        console.log("Total du prix panier",totalPrice)
+
+        // Nombre de produits présents dans le panier
+        let numberSofas = 0;
+
+        let articleTotalQuantity = document.getElementById('totalQuantity');
+        articleTotalQuantity.innerHTML = numberSofas;
+        console.log("nombre de produits",numberSofas);
+
+        
+    } else{
         let total = 0;
         let number = 0;
         for (let produit of Storage) {
@@ -24,7 +43,8 @@ function getCart() {
                         let articleSofa = document.createElement("article");
                         document.querySelector("#cart__items").appendChild(articleSofa);
                         articleSofa.className = "cart__item";
-                        articleSofa.setAttribute('data-id', optionsProduit.idProduit);
+                        articleSofa.setAttribute("data-id", optionsProduit.idProduit);
+                        articleSofa.setAttribute("data-color", optionsProduit.couleurProduit);
 
                         // Insertion de l'élément "div"
                         let articleDivImg = document.createElement("div");
@@ -111,7 +131,7 @@ function getCart() {
 
                         let productTotalQuantity = document.getElementById('totalQuantity');
                         productTotalQuantity.innerHTML = number;
-                        console.log("Nombre de produit",number);
+                        console.log("Nombre de produits",number);
 
                         // Changer la quantité du produit
                         quantiteProduit.addEventListener("change" , (event) => {
@@ -122,18 +142,12 @@ function getCart() {
 
                             if (Storage) {
                                 let resultFind = Storage.find(el => el.idProduit === idChange && el.couleurProduit === colorChange);
-                                //Si le produit commandé est déjà dans le panier
+                         
                                 if (resultFind) {
-                                    /*
-                                    let newQuantite =
-
-                                    parseInt(optionsProduit.quantiteProduit) + parseInt(resultFind.quantiteProduit);
-                                    */
                                     resultFind.quantiteProduit = Number(quantiteProduit.value);
                                     localStorage.setItem("produit",JSON.stringify(Storage));
                                     console.table(Storage);
-                                   
-                                //Si le produit commandé n'est pas dans le panier
+
                                 } else {
                                     Storage.push(produit);
                                     localStorage.setItem("produit",JSON.stringify(Storage));
@@ -141,20 +155,6 @@ function getCart() {
                                 }
                                 location.reload();
                             } 
-
-                           /*
-                            const FindSofa = Storage.find(el => el.idChange === idProduit && el.colorChange === couleurProduit);
-
-                            if(FindSofa){
-                                FindSofa.articleQuantity = Number(articleQuantity.value);  
-                                      
-                            } else{
-                                Storage.push(produit);
-                                localStorage.setItem("produit",JSON.stringify(Storage));
-                            }
-           
-                            location.reload();
-                            */
                         })
   
                         // Supprimer son produit
@@ -166,10 +166,6 @@ function getCart() {
                             let colorRemove = optionsProduit.couleurProduit;
         
                             cartContent = Storage.filter( el => el.idProduit !== idRemove || el.couleurProduit !== colorRemove ); 
-
-                            /*
-                            cartContent = Storage.filter( el => el.idProduit !== idRemove || el.couleurProduit !== colorRemove ); 
-                            event.target.closest(".cart__Item").remove();*/
 
                             localStorage.setItem("produit",JSON.stringify(cartContent));
 
@@ -187,13 +183,9 @@ function getCart() {
             });
            
         }
-    } else if (Storage === null || Storage == 0) {
-        const emptyCart = `<p>Votre panier est vide</p>`;
-        positionEmptyCart.innerHTML = emptyCart;
     }
 }
 getCart();
-
 
 // Cette fonction permet d'instaurater le formulaire avec regex
 function getForm() {
