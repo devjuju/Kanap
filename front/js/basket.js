@@ -79,14 +79,14 @@ function getCart() {
                         articleQte.innerHTML = "Qantité : ";
 
                         // Insertion de la quantité
-                        let articleQuantity = document.createElement("input");
-                        articleItemContentSettingsQuantity.appendChild(articleQuantity);
-                        articleQuantity.value = optionsProduit.quantiteProduit;
-                        articleQuantity.className = "itemQuantity";
-                        articleQuantity.setAttribute("type", "number");
-                        articleQuantity.setAttribute("min", "1");
-                        articleQuantity.setAttribute("max", "100");
-                        articleQuantity.setAttribute("name", "itemQuantity");
+                        let quantiteProduit = document.createElement("input");
+                        articleItemContentSettingsQuantity.appendChild(quantiteProduit);
+                        quantiteProduit.value = optionsProduit.quantiteProduit;
+                        quantiteProduit.className = "itemQuantity";
+                        quantiteProduit.setAttribute("type", "number");
+                        quantiteProduit.setAttribute("min", "1");
+                        quantiteProduit.setAttribute("max", "100");
+                        quantiteProduit.setAttribute("name", "itemQuantity");
 
                         // Insertion de l'élément "div"
                         let articleItemContentSettingsDelete = document.createElement("div");
@@ -114,23 +114,47 @@ function getCart() {
                         console.log("Nombre de produit",number);
 
                         // Changer la quantité du produit
-                        articleQuantity.addEventListener("change" , (event) => {
+                        quantiteProduit.addEventListener("change" , (event) => {
                             event.preventDefault();
 
                             let idChange = optionsProduit.idProduit;
                             let colorChange = optionsProduit.couleurProduit;
-           
-                            const FindSofa = Storage.find(el => el.idProduit === idChange && el.couleurProduit === colorChange);
+
+                            if (Storage) {
+                                let resultFind = Storage.find(el => el.idProduit === idChange && el.couleurProduit === colorChange);
+                                //Si le produit commandé est déjà dans le panier
+                                if (resultFind) {
+                                    /*
+                                    let newQuantite =
+
+                                    parseInt(optionsProduit.quantiteProduit) + parseInt(resultFind.quantiteProduit);
+                                    */
+                                    resultFind.quantiteProduit = Number(quantiteProduit.value);
+                                    localStorage.setItem("produit",JSON.stringify(Storage));
+                                    console.table(Storage);
+                                   
+                                //Si le produit commandé n'est pas dans le panier
+                                } else {
+                                    Storage.push(produit);
+                                    localStorage.setItem("produit",JSON.stringify(Storage));
+                                    console.table(Storage);
+                                }
+                                location.reload();
+                            } 
+
+                           /*
+                            const FindSofa = Storage.find(el => el.idChange === idProduit && el.colorChange === couleurProduit);
 
                             if(FindSofa){
-                                FindSofa.articleQuantity = Number(articleQuantity.value);
-                                
+                                FindSofa.articleQuantity = Number(articleQuantity.value);  
+                                      
                             } else{
                                 Storage.push(produit);
                                 localStorage.setItem("produit",JSON.stringify(Storage));
                             }
            
-                            /*location.reload();*/
+                            location.reload();
+                            */
                         })
   
                         // Supprimer son produit
