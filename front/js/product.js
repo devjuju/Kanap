@@ -98,7 +98,7 @@ function addToCart(){
         };
 
         //Importation dans le local storage
-        let Storage = JSON.parse(localStorage.getItem("sofa"));
+        let Storage = JSON.parse(localStorage.getItem("produit"));
 
         //Si le panier comporte déjà au moins 1 article
         if (Storage) {
