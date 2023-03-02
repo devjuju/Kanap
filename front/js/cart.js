@@ -4,23 +4,21 @@ console.table(Storage);
 
 const positionEmptyCart = document.querySelector("#cart__items");
 
-function getCart(){
-    if (Storage === null || Storage == 0) {
-        const emptyCart = `<p>Votre panier est vide</p>`;
-        positionEmptyCart.innerHTML = emptyCart;
-    } else{
-        for (let sofa of Storage){
-            let optionsProduit = {
-                idProduit: sofa.idProduit,
-                couleurProduit: sofa.couleurProduit,
-                quantiteProduit: sofa.quantiteProduit,
-            };
-
+function getCart() {
+    if (Storage) {
+        let total = 0;
+        let number = 0;
+        for (let produit of Storage) {
+         let optionsProduit = {
+                idProduit: produit.idProduit,
+                couleurProduit: produit.couleurProduit,
+                quantiteProduit: produit.quantiteProduit,
+            }; 
             fetch("http://localhost:3000/api/products/" + optionsProduit.idProduit)
             .then(function(response) {
                 if (response.ok) {
                     response.json()
-                        .then(function(sofa) {
+                    .then(function(produit) {
 
                         // Insertion de l'élément "article"
                         let articleSofa = document.createElement("article");
@@ -36,8 +34,8 @@ function getCart(){
                         // Insertion de l'image
                         let articleImg = document.createElement("img");
                         articleDivImg.appendChild(articleImg);
-                        articleImg.src = sofa.imageUrl;
-                        articleImg.alt = sofa.altTxt;
+                        articleImg.src = produit.imageUrl;
+                        articleImg.alt = produit.altTxt;
    
                         // Insertion de l'élément "div"
                         let articleItemContent = document.createElement("div");
@@ -52,7 +50,7 @@ function getCart(){
                         // Insertion du titre h3
                         let articleTitle = document.createElement("h2");
                         articleItemContentTitlePrice.appendChild(articleTitle);
-                        articleTitle.innerHTML = sofa.name;
+                        articleTitle.innerHTML = produit.name;
 
                         // Insertion de la couleur
                         let articleColor = document.createElement("p");
@@ -63,7 +61,7 @@ function getCart(){
                         // Insertion du prix
                         let articlePrice = document.createElement("p");
                         articleItemContentTitlePrice.appendChild(articlePrice);
-                        articlePrice.innerHTML = sofa.price + " €";
+                        articlePrice.innerHTML = produit.price + " €";
 
                         // Insertion de l'élément "div"
                         let articleItemContentSettings = document.createElement("div");
@@ -102,74 +100,75 @@ function getCart(){
                         articleSupprimer.innerHTML = "Supprimer";
  
                         // Calculer le prix total
-                        let total = 0;
-
-                        total += optionsProduit.quantiteProduit * sofa.price;
+                        total += optionsProduit.quantiteProduit * produit.price;
   
                         let productTotalPrice = document.getElementById('totalPrice');
                         productTotalPrice.innerHTML = total;
-                        console.log(total)
+                        console.log("Total du prix panier",total)
 
                         // Afficher le nombre de produits présents dans le panier
-                        let number = 0;
- 
                         number += optionsProduit.quantiteProduit
 
                         let productTotalQuantity = document.getElementById('totalQuantity');
                         productTotalQuantity.innerHTML = number;
-                        console.log(number);
+                        console.log("Nombre de produit",number);
 
                         // Changer la quantité du produit
                         articleQuantity.addEventListener("change" , (event) => {
-                        event.preventDefault();
-        
-                        let idChange = optionsProduit.idProduit;
-                        let colorChange = optionsProduit.couleurProduit;
-           
-                        const FindSofa = Storage.find(el => el.idProduit === idChange && el.couleurProduit === colorChange);
+                            event.preventDefault();
 
-                        if(FindSofa){
-                            FindSofa.articleQuantity = Number(articleQuantity.value);
-                        } else{
-                            localStorage.setItem("produit",JSON.stringify(Storage));
-                        }
+                            let idChange = optionsProduit.idProduit;
+                            let colorChange = optionsProduit.couleurProduit;
            
-                        location.reload();
-                    })
+                            const FindSofa = Storage.find(el => el.idProduit === idChange && el.couleurProduit === colorChange);
+
+                            if(FindSofa){
+                                FindSofa.articleQuantity = Number(articleQuantity.value);
+                                
+                            } else{
+                                Storage.push(produit);
+                                localStorage.setItem("produit",JSON.stringify(Storage));
+                            }
+           
+                            /*location.reload();*/
+                        })
   
-                    // Supprimer son produit
-                    articleSupprimer.addEventListener("click" , (event) =>{
+                        // Supprimer son produit
+                        articleSupprimer.addEventListener("click" , (event) =>{
 
-                    event.preventDefault();
+                            event.preventDefault();
 
-                    let idRemove = optionsProduit.idProduit;
-                    let colorRemove = optionsProduit.couleurProduit;
+                            let idRemove = optionsProduit.idProduit;
+                            let colorRemove = optionsProduit.couleurProduit;
         
-                    cartContent = Storage.filter( el => el.idProduit !== idRemove || el.couleurProduit !== colorRemove ); 
+                            cartContent = Storage.filter( el => el.idProduit !== idRemove || el.couleurProduit !== colorRemove ); 
 
-                    event.target.closest(".cart__Item").remove();
+                            /*
+                            cartContent = Storage.filter( el => el.idProduit !== idRemove || el.couleurProduit !== colorRemove ); 
+                            event.target.closest(".cart__Item").remove();*/
 
-                    localStorage.setItem("produit",JSON.stringify(cartContent));
+                            localStorage.setItem("produit",JSON.stringify(cartContent));
 
-                    alert("Ce produit a bien été supprimé du panier");
-                    location.reload();
-                })      
-            })
+                            alert("Ce produit a bien été supprimé du panier");
+                            location.reload();
+                        })      
+                    })
                  
-            } else {
-                emptyCart(response);
-            }
+                } else {
+                    emptyCart(response);
+                }
             })
             .catch(function(err) {
                 emptyCart(err);
             });
+           
         }
+    } else if (Storage === null || Storage == 0) {
+        const emptyCart = `<p>Votre panier est vide</p>`;
+        positionEmptyCart.innerHTML = emptyCart;
     }
 }
-
-
-
-
+getCart();
 
 
 // Cette fonction permet d'instaurater le formulaire avec regex

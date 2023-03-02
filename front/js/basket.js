@@ -6,19 +6,19 @@ const positionEmptyCart = document.querySelector("#cart__items");
 
 function getCart() {
     if (Storage) {
-        total = 0;
-        
-        for (let sofa of Storage) {
+        let total = 0;
+        let number = 0;
+        for (let produit of Storage) {
          let optionsProduit = {
-                idProduit: sofa.idProduit,
-                couleurProduit: sofa.couleurProduit,
-                quantiteProduit: sofa.quantiteProduit,
+                idProduit: produit.idProduit,
+                couleurProduit: produit.couleurProduit,
+                quantiteProduit: produit.quantiteProduit,
             }; 
             fetch("http://localhost:3000/api/products/" + optionsProduit.idProduit)
             .then(function(response) {
                 if (response.ok) {
                     response.json()
-                    .then(function(sofa) {
+                    .then(function(produit) {
 
                         // Insertion de l'élément "article"
                         let articleSofa = document.createElement("article");
@@ -34,8 +34,8 @@ function getCart() {
                         // Insertion de l'image
                         let articleImg = document.createElement("img");
                         articleDivImg.appendChild(articleImg);
-                        articleImg.src = sofa.imageUrl;
-                        articleImg.alt = sofa.altTxt;
+                        articleImg.src = produit.imageUrl;
+                        articleImg.alt = produit.altTxt;
    
                         // Insertion de l'élément "div"
                         let articleItemContent = document.createElement("div");
@@ -50,7 +50,7 @@ function getCart() {
                         // Insertion du titre h3
                         let articleTitle = document.createElement("h2");
                         articleItemContentTitlePrice.appendChild(articleTitle);
-                        articleTitle.innerHTML = sofa.name;
+                        articleTitle.innerHTML = produit.name;
 
                         // Insertion de la couleur
                         let articleColor = document.createElement("p");
@@ -61,7 +61,7 @@ function getCart() {
                         // Insertion du prix
                         let articlePrice = document.createElement("p");
                         articleItemContentTitlePrice.appendChild(articlePrice);
-                        articlePrice.innerHTML = sofa.price + " €";
+                        articlePrice.innerHTML = produit.price + " €";
 
                         // Insertion de l'élément "div"
                         let articleItemContentSettings = document.createElement("div");
@@ -100,22 +100,18 @@ function getCart() {
                         articleSupprimer.innerHTML = "Supprimer";
  
                         // Calculer le prix total
-                        let total = 0;
-
-                        total += optionsProduit.quantiteProduit * sofa.price;
+                        total += optionsProduit.quantiteProduit * produit.price;
   
                         let productTotalPrice = document.getElementById('totalPrice');
                         productTotalPrice.innerHTML = total;
-                        console.log(total)
+                        console.log("Total du prix panier",total)
 
                         // Afficher le nombre de produits présents dans le panier
-                        let number = 0;
-
                         number += optionsProduit.quantiteProduit
 
                         let productTotalQuantity = document.getElementById('totalQuantity');
                         productTotalQuantity.innerHTML = number;
-                        console.log(number);
+                        console.log("Nombre de produit",number);
 
                         // Changer la quantité du produit
                         articleQuantity.addEventListener("change" , (event) => {
@@ -128,12 +124,13 @@ function getCart() {
 
                             if(FindSofa){
                                 FindSofa.articleQuantity = Number(articleQuantity.value);
+                                
                             } else{
                                 Storage.push(produit);
                                 localStorage.setItem("produit",JSON.stringify(Storage));
                             }
            
-                            location.reload();
+                            /*location.reload();*/
                         })
   
                         // Supprimer son produit
