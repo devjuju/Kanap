@@ -22,8 +22,7 @@ function getCart(){
         let articleTotalQuantity = document.getElementById('totalQuantity');
         articleTotalQuantity.innerHTML = numberSofas;
         console.log("nombre de produits",numberSofas);
-
-        
+    
     } else{
         let total = 0;
         let number = 0;

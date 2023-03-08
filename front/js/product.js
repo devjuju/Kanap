@@ -58,11 +58,7 @@ function getPost(sofa){
     }
    
 }
-// Cette fonction permet d'enregistrer le panier dans le localStorage
-// L'idée est d'enregistrer une valeur par rapport à une clé
-function saveCart(Storage){
-    localStorage.setItem("produit",JSON.stringify(Storage));
-}
+
 
 joinEvent();
  // Fonction pour joindre un événement
@@ -108,21 +104,22 @@ function addToCart(){
                 let newQuantite =
                 parseInt(optionsProduit.quantiteProduit) + parseInt(resultFind.quantiteProduit);
                 resultFind.quantiteProduit = newQuantite;
-                saveCart(Storage);
+                localStorage.setItem("produit",JSON.stringify(Storage));
                 console.table(Storage);
                
             //Si le produit commandé n'est pas dans le panier
             } else {
                 Storage.push(optionsProduit);
-                saveCart(Storage);
+                localStorage.setItem("produit",JSON.stringify(Storage));
                 console.table(Storage);
             }
         //Si le panier est vide
         } else {
             Storage =[];
             Storage.push(optionsProduit);
-            saveCart(Storage);
+            localStorage.setItem("produit",JSON.stringify(Storage));
             console.table(Storage);
         }
     }   
 }  
+
