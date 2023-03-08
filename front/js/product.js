@@ -93,7 +93,7 @@ function addToCart(){
             quantiteProduit: Number(choixQuantite),
         };
 
-        //Importation dans le local storage
+        // Initialisation du local storage
         let Storage = JSON.parse(localStorage.getItem("produit"));
 
         //Si le panier comporte déjà au moins 1 article
