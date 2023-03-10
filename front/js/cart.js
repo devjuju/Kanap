@@ -286,11 +286,19 @@ function postForm(){
     button_order.addEventListener("click", (event)=>{
     
         //Récupération des coordonnées du formulaire client
-        let inputName = document.getElementById('firstName');
+        let inputName = document.getElementById('firstName').value;
         let inputLastName = document.getElementById('lastName');
         let inputAdress = document.getElementById('address');
         let inputCity = document.getElementById('city');
         let inputMail = document.getElementById('email');
+        if(!Storage){
+            alert ("votre panier est vide");
+        } else{
+        if(inputName = ""){
+            alert("Veuillez remplir tous les champs");
+        }else{
+
+        
 
         //Construction d'un array depuis le local storage
         let idProducts = [];
@@ -323,14 +331,13 @@ function postForm(){
         .then((response) => response.json())
         .then((data) => {
             console.log(data);
-            localStorage.clear();
-            localStorage.setItem("orderId", data.orderId);
-
-            document.location.href = "confirmation.html";
+            document.location.href = "confirmation.html?="+ data.orderId;
         })
         .catch((err) => {
-            alert ("Problème avec fetch : " + err.message);
+            err ("err");
         });
+    }}
     })
+
 }
 postForm();
