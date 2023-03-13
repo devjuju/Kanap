@@ -186,6 +186,9 @@ function getCart(){
 }
 getCart();
 
+
+
+
 // Cette fonction permet d'instaurater le formulaire avec regex
 function getForm() {
     // Ajout des Regex
@@ -281,22 +284,26 @@ getForm();
 //Envoi des informations client au localstorage
 function postForm(){
     const button_order = document.getElementById("order");
-
     //Ecouter le panier
     button_order.addEventListener("click", (event)=>{
     
         //Récupération des coordonnées du formulaire client
-        let inputName = document.getElementById('firstName').value;
+        let inputFirstName = document.getElementById('firstName');
         let inputLastName = document.getElementById('lastName');
         let inputAdress = document.getElementById('address');
         let inputCity = document.getElementById('city');
         let inputMail = document.getElementById('email');
-        if(!Storage){
+        
+        // Si le panier est vide. La commande n'est pas validée par l'utilisateur.
+        if(Storage === null || Storage == 0){
             alert ("votre panier est vide");
         } else{
-        if(inputName = ""){
-            alert("Veuillez remplir tous les champs");
-        }else{
+            // On vérifie que tous les champs sont bien renseignés, sinon on indique un message à l'utilisateur
+            // On vérifie qu'aucun champ n'est vide
+            if(!inputFirstName.value || !inputLastName.value || !inputAdress.value || !inputCity.value || !inputMail.value){
+                alert("Vous devez renseigner tous les champs !");
+                event.preventDefault();
+            }  else {
 
         
 
@@ -331,11 +338,9 @@ function postForm(){
         .then((response) => response.json())
         .then((data) => {
             console.log(data);
-            document.location.href = "confirmation.html?="+ data.orderId;
+            document.location.href = 'confirmation.html?orderId=' + data.orderId;
         })
-        .catch((err) => {
-            err ("err");
-        });
+        .catch(error => console.log('error', error));
     }}
     })
 
