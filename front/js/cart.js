@@ -186,9 +186,6 @@ function getCart(){
 }
 getCart();
 
-
-
-
 // Cette fonction permet d'instaurater le formulaire avec regex
 function getForm() {
     // Ajout des Regex
@@ -230,8 +227,10 @@ function getForm() {
 
         if (charRegExp.test(inputFirstName.value)) {
             firstNameErrorMsg.innerHTML = '';
+            errorFormFirstName = false;
         } else {
             firstNameErrorMsg.innerHTML = 'Veuillez renseigner ce champ.';
+            errorFormFirstName = true;
         }
     };
 
@@ -241,8 +240,11 @@ function getForm() {
 
         if (charRegExp.test(inputLastName.value)) {
             lastNameErrorMsg.innerHTML = '';
+            errorFormLastName = false;
         } else {
             lastNameErrorMsg.innerHTML = 'Veuillez renseigner ce champ.';
+            errorFormLastName = true;
+            
         }
     };
 
@@ -252,8 +254,10 @@ function getForm() {
 
         if (addressRegExp.test(inputAddress.value)) {
             addressErrorMsg.innerHTML = '';
+            errorFormAddress = false;
         } else {
             addressErrorMsg.innerHTML = 'Veuillez renseigner ce champ.';
+            errorFormAddress = true;
         }
     };
 
@@ -263,8 +267,10 @@ function getForm() {
 
         if (charRegExp.test(inputCity.value)) {
             cityErrorMsg.innerHTML = '';
+            errorFormCity = false;
         } else {
             cityErrorMsg.innerHTML = 'Veuillez renseigner ce champ.';
+            errorFormCity = true;
         }
     };
 
@@ -274,8 +280,10 @@ function getForm() {
 
         if (emailRegExp.test(inputEmail.value)) {
             emailErrorMsg.innerHTML = '';
+            errorFormEmail = false;
         } else {
             emailErrorMsg.innerHTML = 'Veuillez renseigner votre email.';
+            errorFormEmail = true;
         }
     };
     }
@@ -286,13 +294,13 @@ function postForm(){
     const button_order = document.getElementById("order");
     //Ecouter le panier
     button_order.addEventListener("click", (event)=>{
-    
+        event.preventDefault();
         //Récupération des coordonnées du formulaire client
         let inputFirstName = document.getElementById('firstName');
         let inputLastName = document.getElementById('lastName');
         let inputAdress = document.getElementById('address');
         let inputCity = document.getElementById('city');
-        let inputMail = document.getElementById('email');
+        let inputEmail = document.getElementById('email');
         
         // Si le panier est vide. La commande n'est pas validée par l'utilisateur.
         if(Storage === null || Storage == 0){
@@ -300,49 +308,58 @@ function postForm(){
         } else{
             // On vérifie que tous les champs sont bien renseignés, sinon on indique un message à l'utilisateur
             // On vérifie qu'aucun champ n'est vide
-            if(!inputFirstName.value || !inputLastName.value || !inputAdress.value || !inputCity.value || !inputMail.value){
+            if(!inputFirstName.value || !inputLastName.value || !inputAdress.value || !inputCity.value || !inputEmail.value){
                 alert("Vous devez renseigner tous les champs !");
                 event.preventDefault();
-            }  else {
+            }  
+            // On vérifie que les champs sont correctement remplis suivant les regex mises en place
+            else if(errorFormFirstName === true || errorFormLastName === true || errorFormAddress === true
+                ||errorFormCity === true || errorFormEmail === true){
+                alert("Veuillez vérifier les champs du formulaire et les remplir correctement !");
+                event.preventDefault();
+            }
+            
+            else {
+            //Construction d'un array depuis le local storage
+            let idProducts = [];
+            for (let sofa in Storage) {
+                idProducts.push(Storage[sofa].idProduit);
+            }
+            console.log(idProducts);
 
+            const order = {
+                contact : {
+                    firstName: inputFirstName.value,
+                    lastName: inputLastName.value,
+                    address: inputAdress.value,
+                    city: inputCity.value,
+                    email: inputEmail.value,
+                },
+                products: idProducts,
+            } 
         
+            // On indique la méthode d'envoi des données
+            const options = {
+                method: 'POST',
+                body: JSON.stringify(order),
+                headers: {
+                    'Accept': 'application/json', 
+                    "Content-Type": "application/json" 
+                },
+            };
 
-        //Construction d'un array depuis le local storage
-        let idProducts = [];
-        for (let sofa in Storage) {
-            idProducts.push(Storage[sofa].idProduit);
-        }
-        console.log(idProducts);
+            fetch("http://localhost:3000/api/products/order", options)
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+                document.location.href = 'confirmation.html?orderId=' + data.orderId;
+            })
+            .catch(error => {
+                console.log('error', error);
+                alert ("Un problème a été rencontré lors de l'envoi du formulaire.");
+            });
 
-        const order = {
-            contact : {
-                firstName: inputName.value,
-                lastName: inputLastName.value,
-                address: inputAdress.value,
-                city: inputCity.value,
-                email: inputMail.value,
-            },
-            products: idProducts,
-        } 
-
-        const options = {
-            method: 'POST',
-            body: JSON.stringify(order),
-            headers: {
-                'Accept': 'application/json', 
-                "Content-Type": "application/json" 
-            },
-        };
-
-        fetch("http://localhost:3000/api/products/order", options)
-        .then((response) => response.json())
-        .then((data) => {
-            console.log(data);
-            document.location.href = 'confirmation.html?orderId=' + data.orderId;
-        })
-        .catch(error => console.log('error', error));
-    }}
+        }}
     })
-
 }
 postForm();
