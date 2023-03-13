@@ -186,9 +186,6 @@ function getCart(){
 }
 getCart();
 
-
-
-
 // Cette fonction permet d'instaurater le formulaire avec regex
 function getForm() {
     // Ajout des Regex
@@ -322,53 +319,47 @@ function postForm(){
                 event.preventDefault();
             }
             
-            
-            
             else {
+            //Construction d'un array depuis le local storage
+            let idProducts = [];
+            for (let sofa in Storage) {
+                idProducts.push(Storage[sofa].idProduit);
+            }
+            console.log(idProducts);
 
+            const order = {
+                contact : {
+                    firstName: inputFirstName.value,
+                    lastName: inputLastName.value,
+                    address: inputAdress.value,
+                    city: inputCity.value,
+                    email: inputEmail.value,
+                },
+                products: idProducts,
+            } 
         
+            // On indique la méthode d'envoi des données
+            const options = {
+                method: 'POST',
+                body: JSON.stringify(order),
+                headers: {
+                    'Accept': 'application/json', 
+                    "Content-Type": "application/json" 
+                },
+            };
 
-        //Construction d'un array depuis le local storage
-        let idProducts = [];
-        for (let sofa in Storage) {
-            idProducts.push(Storage[sofa].idProduit);
-        }
-        console.log(idProducts);
+            fetch("http://localhost:3000/api/products/order", options)
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+                document.location.href = 'confirmation.html?orderId=' + data.orderId;
+            })
+            .catch(error => {
+                console.log('error', error);
+                alert ("Un problème a été rencontré lors de l'envoi du formulaire.");
+            });
 
-        const order = {
-            contact : {
-                firstName: inputFirstName.value,
-                lastName: inputLastName.value,
-                address: inputAdress.value,
-                city: inputCity.value,
-                email: inputEmail.value,
-            },
-            products: idProducts,
-        } 
-        
-        // On indique la méthode d'envoi des données
-        const options = {
-            method: 'POST',
-            body: JSON.stringify(order),
-            headers: {
-                'Accept': 'application/json', 
-                "Content-Type": "application/json" 
-            },
-        };
-
-        fetch("http://localhost:3000/api/products/order", options)
-        .then((response) => response.json())
-        .then((data) => {
-            console.log(data);
-            document.location.href = 'confirmation.html?orderId=' + data.orderId;
-        })
-        .catch(error => {
-            console.log('error', error);
-            alert ("Un problème a été rencontré lors de l'envoi du formulaire.");
-        });
-
-    }}
+        }}
     })
-
 }
 postForm();
